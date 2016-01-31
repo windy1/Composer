@@ -81,7 +81,7 @@ public class Score {
      */
     public void play(Composer context, Viewer viewer, Vector3d pos) {
         // get the shortest note in score, these will be used to determine how often we "step"
-        // for example, if the shortest note is a sixteenth note we need to step 16 times per beat
+        // for example, if the shortest note is a sixteenth note in common time, we need to step 4 times per beat
         Note shortestNote = null;
         for (Measure measure : measures) {
             for (Note note : measure.getNotes()) {

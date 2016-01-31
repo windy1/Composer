@@ -1,0 +1,19 @@
+group 'se.walkercrou'
+version '1.0-SNAPSHOT'
+
+apply plugin: 'java'
+
+repositories {
+    mavenCentral()
+    mavenLocal()
+    maven {
+        name 'sponge'
+        url 'http://repo.spongepowered.org/maven'
+    }
+}
+
+dependencies {
+    compile 'org.slf4j:slf4j-api:1.7.14'
+    compile 'org.spongepowered:spongeapi:3.1.0-SNAPSHOT'
+    testCompile group: 'junit', name: 'junit', version: '4.11'
+}

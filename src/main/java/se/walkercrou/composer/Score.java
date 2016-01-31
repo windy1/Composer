@@ -6,7 +6,6 @@ import org.spongepowered.api.effect.Viewer;
 import org.spongepowered.api.scheduler.Task;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
 
@@ -17,14 +16,14 @@ public class Score {
     private String title, artist;
     private int tempoBmp;
     private TimeSignature time;
-    private List<Measure> measures;
+    private List<Layer> layers;
 
-    private Score(String title, String artist, int tempoBmp, TimeSignature time, List<Measure> measures) {
+    private Score(String title, String artist, int tempoBmp, TimeSignature time, List<Layer> layers) {
         this.title = title;
         this.artist = artist;
         this.tempoBmp = tempoBmp;
         this.time = time;
-        this.measures = measures;
+        this.layers = layers;
     }
 
     /**
@@ -64,30 +63,32 @@ public class Score {
     }
 
     /**
-     * Returns the measures or "bars" in this piece.
+     * Returns the {@link Layer}s in this Score.
      *
-     * @return measures in piece
+     * @return layers in score
      */
-    public List<Measure> getMeasures() {
-        return measures;
+    public List<Layer> getLayers() {
+        return layers;
     }
 
     /**
-     * Plays the score for the specified {@link Viewer} at the specified {@link Vector3d} position.
+     * Plays this score for the specified {@link Viewer} at the specified {@link Vector3d} position.
      *
      * @param context plugin
-     * @param viewer viewer to play for
-     * @param pos position
+     * @param viewer to play for
+     * @param pos position to play at
      */
     public void play(Composer context, Viewer viewer, Vector3d pos) {
         // get the shortest note in score, these will be used to determine how often we "step"
         // for example, if the shortest note is a sixteenth note in common time, we need to step 4 times per beat
         Note shortestNote = null;
-        for (Measure measure : measures) {
-            for (Note note : measure.getNotes()) {
-                int type = note.getType();
-                if (shortestNote == null || type > shortestNote.getType())
-                    shortestNote = note;
+        for (Layer layer : layers) {
+            for (Measure measure : layer.getMeasures()) {
+                for (Note note : measure.getNotes()) {
+                    int type = note.getType();
+                    if (shortestNote == null || type > shortestNote.getType())
+                        shortestNote = note;
+                }
             }
         }
 
@@ -107,49 +108,27 @@ public class Score {
         context.log.info("Steps per beat : " + stepsPerBeat);
 
         task = Sponge.getScheduler().createTaskBuilder().async()
-                .execute(() -> nextStep(context, viewer, pos))
-                .name("\"" + title + "\" -- " + artist)
+                .execute(() -> nextStep(viewer, pos))
+                .name("\"" + title + "\" by " + artist)
                 .delay(delay, TimeUnit.MILLISECONDS)
                 .interval(delay, TimeUnit.MILLISECONDS)
                 .submit(context);
     }
 
+    private Task task;
     private int stepsPerBeat;
     private int currentStep = 1;
-    private int currentBeat = 1;
-    private int currentMeasure = 1;
 
-    private Task task;
-    private int hold = 1;
-    private int noteIndex = 0;
-
-    private void nextStep(Composer context, Viewer viewer, Vector3d pos) {
-        context.log.info("step = " + currentStep);
-        context.log.info("beat = " + currentBeat);
-        context.log.info("measure = " + currentMeasure);
-
-        if (--hold <= 0) {
-            Measure measure = measures.get(currentMeasure - 1);
-            Note note = measure.getNotes()[noteIndex++];
-            note.play(viewer, pos);
-            hold = (int) (note.getBeatsForTime(time) * stepsPerBeat);
-        }
-
-        // increment counters
-        if (currentStep == stepsPerBeat) {
+    private void nextStep(Viewer viewer, Vector3d pos) {
+        boolean finished = true;
+        for (Layer layer : layers)
+            finished &= layer.onStep(viewer, pos, currentStep, stepsPerBeat);
+        if (currentStep == stepsPerBeat)
             currentStep = 1;
-            if (currentBeat == time.getBeatsPerMeasure()) {
-                currentBeat = 1;
-                if (currentMeasure == measures.size())
-                    task.cancel();
-                else {
-                    currentMeasure++;
-                    noteIndex = 0;
-                }
-            } else
-                currentBeat++;
-        } else
+        else
             currentStep++;
+        if (finished)
+            task.cancel();
     }
 
     /**
@@ -159,7 +138,7 @@ public class Score {
         private String title, artist;
         private int tempoBmp;
         private TimeSignature time;
-        private final List<Measure> measures = new ArrayList<>();
+        protected final List<Layer> layers = new ArrayList<>();
 
         /**
          * @see Score#getTitle()
@@ -201,14 +180,8 @@ public class Score {
             return this;
         }
 
-        /**
-         * @see Score#getMeasures()
-         * @param measures to add
-         * @return this
-         */
-        public Builder measure(Measure... measures) {
-            this.measures.addAll(Arrays.asList(measures));
-            return this;
+        public Layer.Builder newLayer() {
+            return new Layer.Builder(this, time);
         }
 
         /**
@@ -217,7 +190,7 @@ public class Score {
          * @return new score
          */
         public Score build() {
-            return new Score(title, artist, tempoBmp, time, measures);
+            return new Score(title, artist, tempoBmp, time, layers);
         }
     }
 }

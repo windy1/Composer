@@ -17,6 +17,10 @@ import org.spongepowered.api.event.game.state.GameStartedServerEvent;
 import org.spongepowered.api.plugin.Plugin;
 import org.spongepowered.api.text.Text;
 
+import static se.walkercrou.composer.Pitch.*;
+import static se.walkercrou.composer.Note.*;
+import static org.spongepowered.api.effect.sound.SoundTypes.*;
+
 /**
  * Main class for Composer plugin.
  */
@@ -68,17 +72,20 @@ public class Composer {
         if (!(src instanceof Player))
             return CommandResult.builder().successCount(0).build();
 
-        Note qb1 = Note.quarter(Pitch.B1);
-        Note qa1 = Note.quarter(Pitch.A1);
+        Note qb1 = new Note(B1, QUARTER);
+        Note qa1 = new Note(A1, QUARTER);
 
-        Measure m1 = new Measure(qb1, qa1, Note.quarter(Pitch.G1), qa1); // mary had a
-        Measure m2 = new Measure(qb1, qb1, Note.half(Pitch.B1)); // little lamb,
-        Measure m3 = new Measure(qa1, qa1, Note.half(Pitch.A1)); // little lamb,
-        Measure m4 = new Measure(qb1, Note.quarter(Pitch.D2), Note.half(Pitch.D2)); // little lamb.
+        Measure m1 = new Measure(qb1, qa1, new Note(G1, QUARTER), qa1); // mary had a
+        Measure m2 = new Measure(qb1, qb1, new Note(B1, HALF)); // little lamb,
+        Measure m3 = new Measure(qa1, qa1, new Note(A1, HALF)); // little lamb,
+        Measure m4 = new Measure(qb1, new Note(D2, QUARTER), new Note(D2, HALF)); // little lamb.
         // (repeat m1) mary had a
         Measure m6 = new Measure(qb1, qb1, qb1, qb1); // little lamb. Its
         Measure m7 = new Measure(qa1, qa1, qb1, qa1); // fleece was white as
-        Measure m8 = new Measure(Note.whole(Pitch.G1));
+        Measure m8 = new Measure(new Note(G1, WHOLE));
+
+        Measure bbass = new Measure(new Note(NOTE_BASS, B0, WHOLE));
+        Measure abass = new Measure(new Note(NOTE_BASS, A0, WHOLE));
 
         Player player = (Player) src;
         new Score.Builder()
@@ -86,7 +93,12 @@ public class Composer {
                 .artist("Sarah Josepha Hale")
                 .tempo(240)
                 .time(TimeSignature.COMMON)
+                .newLayer()
                 .measure(m1, m2, m3, m4, m1, m6, m7, m8)
+                .saveLayer()
+                .newLayer()
+                .measure(bbass, bbass, abass, bbass, bbass, bbass, abass, new Measure(new Note(G0, WHOLE)))
+                .saveLayer()
                 .build()
                 .play(this, player.getWorld(), player.getLocation().getPosition());
 

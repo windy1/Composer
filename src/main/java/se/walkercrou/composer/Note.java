@@ -2,12 +2,20 @@ package se.walkercrou.composer;
 
 import com.flowpowered.math.vector.Vector3d;
 import org.spongepowered.api.effect.Viewer;
+import org.spongepowered.api.effect.sound.SoundType;
 import org.spongepowered.api.effect.sound.SoundTypes;
 
 /**
  * Represents a single note in a {@link Measure}.
  */
 public class Note {
+    public static final int WHOLE = 1;
+    public static final int HALF = 2;
+    public static final int QUARTER = 4;
+    public static final int EIGHTH = 8;
+    public static final int SIXTEENTH = 16;
+
+    private final SoundType instrument;
     private final double pitch;
     private final int type;
 
@@ -15,12 +23,18 @@ public class Note {
      * Creates new Note with the specified {@link Pitch} value and type. The note type corresponds to how many beats
      * it should last. For instance, in common time, a quarter note (type 4) lasts one beat.
      *
+     * @param instrument of note
      * @param pitch of note
      * @param type of
      */
-    public Note(double pitch, int type) {
+    public Note(SoundType instrument, double pitch, int type) {
+        this.instrument = instrument;
         this.pitch = pitch;
         this.type = type;
+    }
+
+    public Note(double pitch, int type) {
+        this(SoundTypes.NOTE_PIANO, pitch, type);
     }
 
     /**
@@ -59,56 +73,6 @@ public class Note {
      * @param pos to play at
      */
     public void play(Viewer viewer, Vector3d pos) {
-        viewer.playSound(SoundTypes.NOTE_PIANO, pos, 2, pitch);
-    }
-
-    /**
-     * Returns a whole note with the specified pitch.
-     *
-     * @param pitch of note
-     * @return whole note
-     */
-    public static Note whole(double pitch) {
-        return new Note(pitch, 1);
-    }
-
-    /**
-     * Returns a half note with the specified pitch.
-     *
-     * @param pitch of note
-     * @return half note
-     */
-    public static Note half(double pitch) {
-        return new Note(pitch, 2);
-    }
-
-    /**
-     * Returns a quarter note with the specified pitch.
-     *
-     * @param pitch of note
-     * @return quarter note
-     */
-    public static Note quarter(double pitch) {
-        return new Note(pitch, 4);
-    }
-
-    /**
-     * Returns an eighth note with the specified pitch.
-     *
-     * @param pitch of note
-     * @return eighth note
-     */
-    public static Note eighth(double pitch) {
-        return new Note(pitch, 8);
-    }
-
-    /**
-     * Returns a sixteenth note with the specified pitch.
-     *
-     * @param pitch of note
-     * @return sixteenth note
-     */
-    public static Note sixteenth(double pitch) {
-        return new Note(pitch, 16);
+        viewer.playSound(instrument, pos, 2, pitch);
     }
 }

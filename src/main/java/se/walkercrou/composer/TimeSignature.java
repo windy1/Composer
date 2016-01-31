@@ -13,10 +13,18 @@ public class TimeSignature {
      */
     public static final TimeSignature CUT = new TimeSignature(2, 2);
 
-    private final int beats, singleBeatNote;
+    private final int beatsPerMeasure, singleBeatNote;
 
-    public TimeSignature(int beats, int singleBeatNote) {
-        this.beats = beats;
+    /**
+     * Creates a new TimeSignature. The first parameter represents the upper number in a traditional key signature
+     * which represents the amount of beats in a measure. The second parameter represents the lower number in a key
+     * signature which represents the type of note that is to receive a single beat.
+     *
+     * @param beatsPerMeasure beats in a measure
+     * @param singleBeatNote note that is one beat long
+     */
+    public TimeSignature(int beatsPerMeasure, int singleBeatNote) {
+        this.beatsPerMeasure = beatsPerMeasure;
         this.singleBeatNote = singleBeatNote;
     }
 
@@ -26,7 +34,7 @@ public class TimeSignature {
      * @return amount of beats in measure
      */
     public int getBeatsPerMeasure() {
-        return beats;
+        return beatsPerMeasure;
     }
 
     /**

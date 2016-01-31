@@ -19,7 +19,7 @@ public class Score {
     private TimeSignature time;
     private List<Measure> measures;
 
-    public Score(String title, String artist, int tempoBmp, TimeSignature time, List<Measure> measures) {
+    private Score(String title, String artist, int tempoBmp, TimeSignature time, List<Measure> measures) {
         this.title = title;
         this.artist = artist;
         this.tempoBmp = tempoBmp;
@@ -101,6 +101,7 @@ public class Score {
 
         stepsPerBeat = shortestNote.getType() / time.getSingleBeatNote();
 
+        context.log.info("Now playing: \"" + title + "\" by " + artist);
         context.log.info("Millis per beat : " + millisPerBeat);
         context.log.info("Millis per step : " + millisPerStep);
         context.log.info("Steps per beat : " + stepsPerBeat);
@@ -131,10 +132,7 @@ public class Score {
             Measure measure = measures.get(currentMeasure - 1);
             Note note = measure.getNotes()[noteIndex++];
             note.play(viewer, pos);
-            double beats = note.getBeatsForTime(time);
-            context.log.info("beats = " + beats);
-            hold = (int) (beats * stepsPerBeat);
-            context.log.info("hold = " + hold);
+            hold = (int) (note.getBeatsForTime(time) * stepsPerBeat);
         }
 
         // increment counters

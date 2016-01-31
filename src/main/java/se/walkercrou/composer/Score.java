@@ -95,7 +95,7 @@ public class Score {
             return;
 
         // i.e. in common time: a sixteenth note would be a 1/4 beat long
-        double millisPerBeat = tempoBmp / 60 * 1000;
+        double millisPerBeat = 60 / (double) tempoBmp * 1000;
         double millisPerStep = millisPerBeat * shortestNote.getBeatsForTime(time);
         long delay = (long) millisPerStep;
 

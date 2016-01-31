@@ -84,7 +84,7 @@ public class Composer {
         new Score.Builder()
                 .title("Mary Had a Little Lamb")
                 .artist("Sarah Josepha Hale")
-                .tempo(60)
+                .tempo(240)
                 .time(TimeSignature.COMMON)
                 .measure(m1, m2, m3, m4, m1, m6, m7, m8)
                 .build()

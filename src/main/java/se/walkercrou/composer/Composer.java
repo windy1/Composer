@@ -3,6 +3,7 @@ package se.walkercrou.composer;
 import com.google.inject.Inject;
 import org.slf4j.Logger;
 import org.spongepowered.api.Sponge;
+import org.spongepowered.api.command.CommandException;
 import org.spongepowered.api.command.CommandManager;
 import org.spongepowered.api.command.CommandResult;
 import org.spongepowered.api.command.CommandSource;
@@ -16,10 +17,14 @@ import org.spongepowered.api.event.Listener;
 import org.spongepowered.api.event.game.state.GameStartedServerEvent;
 import org.spongepowered.api.plugin.Plugin;
 import org.spongepowered.api.text.Text;
+import se.walkercrou.composer.nbs.NoteBlockStudioSong;
 
-import static se.walkercrou.composer.Pitch.*;
+import java.io.File;
+import java.io.IOException;
+
+import static org.spongepowered.api.effect.sound.SoundTypes.NOTE_BASS;
 import static se.walkercrou.composer.Note.*;
-import static org.spongepowered.api.effect.sound.SoundTypes.*;
+import static se.walkercrou.composer.Pitch.*;
 
 /**
  * Main class for Composer plugin.
@@ -51,6 +56,12 @@ public class Composer {
             .executor(this::playSong)
             .build();
 
+    private final CommandSpec nbs = CommandSpec.builder()
+            .description(Text.of("Reads the specified .nbs file and prints the result"))
+            .arguments(GenericArguments.onlyOne(GenericArguments.string(Text.of("file"))))
+            .executor(this::readNbsFile)
+            .build();
+
     @Listener
     public void onGameStarted(GameStartedServerEvent event) {
         CommandManager cm = Sponge.getCommandManager();
@@ -58,6 +69,19 @@ public class Composer {
         cm.register(this, bass, "bass");
         cm.register(this, pig, "pig");
         cm.register(this, maryCmd, "mary");
+        cm.register(this, nbs, "nbs");
+    }
+
+    private CommandResult readNbsFile(CommandSource src, CommandContext context) throws CommandException {
+        NoteBlockStudioSong nbs;
+        try {
+            nbs = NoteBlockStudioSong.read(new File(context.<String>getOne("file").get()));
+        } catch (IOException e) {
+            e.printStackTrace();
+            throw new CommandException(Text.of("Error reading NBS file"), e);
+        }
+        src.sendMessage(Text.of(nbs.toString()));
+        return CommandResult.success();
     }
 
     private CommandResult playNote(CommandSource src, CommandContext context, SoundType type) {
@@ -68,9 +92,9 @@ public class Composer {
         return CommandResult.success();
     }
 
-    private CommandResult playSong(CommandSource src, CommandContext context) {
+    private CommandResult playSong(CommandSource src, CommandContext context) throws CommandException {
         if (!(src instanceof Player))
-            return CommandResult.builder().successCount(0).build();
+            throw new CommandException(Text.of("Only players may run this command."));
 
         Note qb1 = new Note(B1, QUARTER);
         Note qa1 = new Note(A1, QUARTER);

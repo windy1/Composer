@@ -180,6 +180,11 @@ public class Score {
             return this;
         }
 
+        /**
+         * Creates a new {@link Layer.Builder}.
+         *
+         * @return new layer builder
+         */
         public Layer.Builder newLayer() {
             return new Layer.Builder(this, time);
         }

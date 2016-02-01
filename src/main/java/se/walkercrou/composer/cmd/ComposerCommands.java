@@ -2,6 +2,7 @@ package se.walkercrou.composer.cmd;
 
 import org.spongepowered.api.Sponge;
 import org.spongepowered.api.command.CommandException;
+import org.spongepowered.api.command.CommandPermissionException;
 import org.spongepowered.api.command.CommandResult;
 import org.spongepowered.api.command.CommandSource;
 import org.spongepowered.api.command.args.CommandContext;
@@ -63,6 +64,7 @@ public class ComposerCommands {
             .executor(this::previousTrack)
             .build();
     private final CommandSpec base = CommandSpec.builder()
+            .permission("composer.musicplayer")
             .description(Text.of("Main parent command for plugin."))
             .executor(this::listTracks)
             .child(list, "list", "list-tracks", "tracks", "track-list")
@@ -143,7 +145,9 @@ public class ComposerCommands {
             if (!(src instanceof Player))
                 throw new CommandException(Text.of("Cannot run command as non-player without player argument."));
             player = (Player) src;
-        }
+        } else if (!src.hasPermission("composer.musicplayer.others"))
+            throw new CommandPermissionException(
+                    Text.of("You do not have permission to control other player's music"));
         return player;
     }
 }

@@ -40,23 +40,23 @@ public class NoteBlockStudioSong {
     private NoteBlockStudioSong() {
     }
 
+    /**
+     * Converts this song into a {@link Score}.
+     *
+     * @return score
+     */
     public Score toScore() {
-        System.out.println("nbs tempo = " + tempoTicksPerSecond);
-
         Score.Builder builder = new Score.Builder()
                 .title(name)
                 .artist(ogAuthor)
                 .tempo((int) tempoTicksPerSecond * 60)
                 .time(new TimeSignature(timeSignature, 4));
 
-        System.out.println("nbs layers = " + noteBlocks.length);
-
         for (int i = 0; i < noteBlocks.length; i++) {
             NoteBlock[] layer = noteBlocks[i];
             Layer.Builder layerBuilder = builder.newLayer();
             Note[] currentMeasure = new Note[timeSignature];
             int beat = 1;
-            System.out.println("notes in layer #" + i + ": " + layer.length);
             for (NoteBlock note : layer) {
                 if (note == null)
                     currentMeasure[beat - 1] = Note.rest(Note.QUARTER);
@@ -73,7 +73,6 @@ public class NoteBlockStudioSong {
                             layerInfo[i].volume / 100d);
                 }
 
-                System.out.println("beat = " + beat);
                 if (beat == timeSignature) {
                     layerBuilder.measure(new Measure(currentMeasure));
                     currentMeasure = new Note[timeSignature];
@@ -180,6 +179,11 @@ public class NoteBlockStudioSong {
             this.key = key;
         }
 
+        /**
+         * Returns the {@link SoundType} instrument for this note.
+         *
+         * @return instrument
+         */
         public SoundType getInstrument() {
             switch (instrument) {
                 default:

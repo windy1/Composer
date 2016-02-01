@@ -2,6 +2,7 @@ package se.walkercrou.composer;
 
 import com.flowpowered.math.vector.Vector3d;
 import org.spongepowered.api.effect.Viewer;
+import org.spongepowered.api.entity.living.player.Player;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -42,6 +43,7 @@ public class Layer {
             // play next note
             Measure measure = measures.get(currentMeasure - 1);
             Note note = measure.getNotes()[noteIndex++];
+            pos = pos == null && viewer instanceof Player ? ((Player) viewer).getLocation().getPosition() : pos;
             note.play(viewer, pos);
             hold = (int) (note.getBeatsForTime(time) * stepsPerBeat);
         }

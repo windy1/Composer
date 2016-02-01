@@ -3,6 +3,7 @@ package se.walkercrou.composer;
 import com.flowpowered.math.vector.Vector3d;
 import org.spongepowered.api.Sponge;
 import org.spongepowered.api.effect.Viewer;
+import org.spongepowered.api.entity.living.player.Player;
 import org.spongepowered.api.scheduler.Task;
 
 import java.util.ArrayList;
@@ -120,6 +121,16 @@ public class Score {
                 .delay(delay, TimeUnit.MILLISECONDS)
                 .interval(delay, TimeUnit.MILLISECONDS)
                 .submit(context);
+    }
+
+    /**
+     * Plays the score for the specified {@link Player} and uses their current location for each note.
+     *
+     * @param context plugin
+     * @param viewer player
+     */
+    public void play(Composer context, Player viewer) {
+        play(context, viewer, null);
     }
 
     /**

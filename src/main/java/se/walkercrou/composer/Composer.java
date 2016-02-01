@@ -6,11 +6,13 @@ import ninja.leaping.configurate.commented.CommentedConfigurationNode;
 import ninja.leaping.configurate.loader.ConfigurationLoader;
 import org.slf4j.Logger;
 import org.spongepowered.api.config.DefaultConfig;
+import org.spongepowered.api.entity.living.player.Player;
 import org.spongepowered.api.event.Listener;
 import org.spongepowered.api.event.game.state.GameStartedServerEvent;
 import org.spongepowered.api.plugin.Plugin;
 import se.walkercrou.composer.cmd.ComposerCommands;
 import se.walkercrou.composer.cmd.TestCommands;
+import se.walkercrou.composer.nbs.MusicPlayer;
 import se.walkercrou.composer.nbs.NoteBlockStudioSong;
 
 import java.io.File;
@@ -31,7 +33,7 @@ public class Composer {
     @Inject @DefaultConfig(sharedRoot = false) private ConfigurationLoader<CommentedConfigurationNode> configLoader;
     private ConfigurationNode config;
     private final List<NoteBlockStudioSong> nbsTracks = new ArrayList<>();
-    private final Map<UUID, Score> nowPlaying = new HashMap<>();
+    private final Map<UUID, MusicPlayer> musicPlayers = new HashMap<>();
 
     @Listener
     public void onGameStarted(GameStartedServerEvent event) {
@@ -42,22 +44,21 @@ public class Composer {
         loadTracks();
     }
 
+    public MusicPlayer getMusicPlayer(Player player) {
+        UUID playerId = player.getUniqueId();
+        MusicPlayer mp = musicPlayers.get(playerId);
+        if (mp == null)
+            musicPlayers.put(playerId, mp = new MusicPlayer(this, getNbsTracks()));
+        return mp;
+    }
+
     /**
      * Returns the currently loaded {@link NoteBlockStudioSong}s.
      *
      * @return list of tracks
      */
     public List<NoteBlockStudioSong> getNbsTracks() {
-        return nbsTracks;
-    }
-
-    /**
-     * Returns a map of songs that are playing for players.
-     *
-     * @return songs that are playing
-     */
-    public Map<UUID, Score> nowPlaying() {
-        return nowPlaying;
+        return Collections.unmodifiableList(nbsTracks);
     }
 
     private void loadTracks() {
@@ -71,11 +72,15 @@ public class Composer {
             progress(progress);
             try (DirectoryStream<Path> stream = Files.newDirectoryStream(file.toPath(), "*.nbs")) {
                 for (Path path : stream) {
-                    nbsTracks.add(NoteBlockStudioSong.read(path.toFile()));
-                    progress(++progress / total * 100);
+                    try {
+                        nbsTracks.add(NoteBlockStudioSong.read(path.toFile()));
+                        progress(++progress / total * 100);
+                    } catch (IOException e) {
+                        log.error("Could not read file (file is likely malformed): " + path, e);
+                    }
                 }
             } catch (IOException e) {
-                log.info("An error occurred while loading the tracks.", e);
+                log.error("An error occurred while loading the tracks.", e);
             }
 
         }).start();

@@ -161,7 +161,7 @@ public class NoteBlockStudioSong {
     }
 
     private static void readLayerInfo(NoteBlockStudioSong result, ByteBuffer buffer) throws IOException {
-        result.layerInfo = new LayerInfo[result.height];
+        result.layerInfo = new LayerInfo[result.height + 1];
         for (int i = 0; i < result.height; i++)
             result.layerInfo[i] = new LayerInfo(getString(buffer), buffer.get());
     }

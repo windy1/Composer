@@ -23,6 +23,7 @@ public class Note {
     /**
      * Creates new Note with the specified {@link Pitch} value and type. The note type corresponds to how many beats
      * it should last. For instance, in common time, a quarter note (type 4) lasts one beat.
+     *
      *  @param instrument of note
      * @param pitch of note
      * @param type of
@@ -83,6 +84,18 @@ public class Note {
      * @param pos to play at
      */
     public void play(Viewer viewer, Vector3d pos) {
+        if (volume == 0)
+            return;
         viewer.playSound(instrument, pos, volume * 2, pitch);
+    }
+
+    /**
+     * Creates a new "rest" note.
+     *
+     * @param type of rest
+     * @return new note
+     */
+    public static Note rest(int type) {
+        return new Note(null, -1, type, 0);
     }
 }

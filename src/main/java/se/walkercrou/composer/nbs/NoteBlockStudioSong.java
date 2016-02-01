@@ -2,6 +2,9 @@ package se.walkercrou.composer.nbs;
 
 import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang3.builder.ToStringBuilder;
+import org.spongepowered.api.effect.sound.SoundType;
+import org.spongepowered.api.effect.sound.SoundTypes;
+import se.walkercrou.composer.*;
 
 import java.io.*;
 import java.nio.ByteBuffer;
@@ -35,6 +38,58 @@ public class NoteBlockStudioSong {
     public LayerInfo[] layerInfo;
 
     private NoteBlockStudioSong() {
+    }
+
+    public Score toScore() {
+        System.out.println("nbs tempo = " + tempoTicksPerSecond);
+
+        Score.Builder builder = new Score.Builder()
+                .title(name)
+                .artist(ogAuthor)
+                .tempo((int) tempoTicksPerSecond * 60)
+                .time(new TimeSignature(timeSignature, 4));
+
+        System.out.println("nbs layers = " + noteBlocks.length);
+
+        for (int i = 0; i < noteBlocks.length; i++) {
+            NoteBlock[] layer = noteBlocks[i];
+            Layer.Builder layerBuilder = builder.newLayer();
+            Note[] currentMeasure = new Note[timeSignature];
+            int beat = 1;
+            System.out.println("notes in layer #" + i + ": " + layer.length);
+            for (NoteBlock note : layer) {
+                if (note == null)
+                    currentMeasure[beat - 1] = Note.rest(Note.QUARTER);
+                else {
+                    // make sure key is within two octave range
+                    int key = note.key;
+                    while (key < 33)
+                        key += 12;
+                    while (key > 57)
+                        key -= 12;
+                    key -= 33;
+
+                    currentMeasure[beat - 1] = new Note(note.getInstrument(), Pitch.TWO_OCTAVES[key], Note.QUARTER,
+                            layerInfo[i].volume / 100d);
+                }
+
+                System.out.println("beat = " + beat);
+                if (beat == timeSignature) {
+                    layerBuilder.measure(new Measure(currentMeasure));
+                    currentMeasure = new Note[timeSignature];
+                    beat = 1;
+                } else
+                    beat++;
+            }
+            layerBuilder.saveLayer();
+        }
+
+        return builder.build();
+    }
+
+    @Override
+    public String toString() {
+        return ToStringBuilder.reflectionToString(this);
     }
 
     /**
@@ -113,11 +168,6 @@ public class NoteBlockStudioSong {
             result.layerInfo[i] = new LayerInfo(getString(buffer), buffer.get());
     }
 
-    @Override
-    public String toString() {
-        return ToStringBuilder.reflectionToString(this);
-    }
-
     /**
      * Represents a single note block within the song.
      */
@@ -128,6 +178,22 @@ public class NoteBlockStudioSong {
         private NoteBlock(byte instrument, byte key) {
             this.instrument = instrument;
             this.key = key;
+        }
+
+        public SoundType getInstrument() {
+            switch (instrument) {
+                default:
+                case 0:
+                    return SoundTypes.NOTE_PIANO;
+                case 1:
+                    return SoundTypes.NOTE_BASS_GUITAR;
+                case 2:
+                    return SoundTypes.NOTE_BASS_DRUM;
+                case 3:
+                    return SoundTypes.NOTE_SNARE_DRUM;
+                case 4:
+                    return SoundTypes.NOTE_PLING;
+            }
         }
 
         @Override

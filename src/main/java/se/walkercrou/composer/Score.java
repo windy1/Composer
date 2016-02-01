@@ -106,6 +106,7 @@ public class Score {
         context.log.info("Millis per beat : " + millisPerBeat);
         context.log.info("Millis per step : " + millisPerStep);
         context.log.info("Steps per beat : " + stepsPerBeat);
+        context.log.info("Layers: " + layers.size());
 
         task = Sponge.getScheduler().createTaskBuilder().async()
                 .execute(() -> nextStep(viewer, pos))

@@ -73,6 +73,9 @@ public class Composer {
     }
 
     private CommandResult readNbsFile(CommandSource src, CommandContext context) throws CommandException {
+        if (!(src instanceof Player))
+            throw new CommandException(Text.of("Only players may run this command."));
+
         NoteBlockStudioSong nbs;
         try {
             nbs = NoteBlockStudioSong.read(new File(context.<String>getOne("file").get()));
@@ -80,7 +83,10 @@ public class Composer {
             e.printStackTrace();
             throw new CommandException(Text.of("Error reading NBS file"), e);
         }
-        src.sendMessage(Text.of(nbs.toString()));
+
+        Player player = (Player) src;
+        nbs.toScore().play(this, player.getWorld(), player.getLocation().getPosition());
+
         return CommandResult.success();
     }
 

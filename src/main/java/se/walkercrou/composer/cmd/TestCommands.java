@@ -1,4 +1,4 @@
-package se.walkercrou.composer;
+package se.walkercrou.composer.cmd;
 
 import org.spongepowered.api.Sponge;
 import org.spongepowered.api.command.CommandException;
@@ -11,21 +11,16 @@ import org.spongepowered.api.command.spec.CommandSpec;
 import org.spongepowered.api.effect.sound.SoundType;
 import org.spongepowered.api.effect.sound.SoundTypes;
 import org.spongepowered.api.entity.living.player.Player;
-import org.spongepowered.api.event.Listener;
-import org.spongepowered.api.event.game.state.GameStartedServerEvent;
 import org.spongepowered.api.text.Text;
+import se.walkercrou.composer.*;
 import se.walkercrou.composer.nbs.NoteBlockStudioSong;
 
 import java.io.File;
 import java.io.IOException;
 
 import static org.spongepowered.api.effect.sound.SoundTypes.NOTE_BASS;
-import static se.walkercrou.composer.Note.HALF;
-import static se.walkercrou.composer.Note.QUARTER;
-import static se.walkercrou.composer.Note.WHOLE;
+import static se.walkercrou.composer.Note.*;
 import static se.walkercrou.composer.Pitch.*;
-import static se.walkercrou.composer.Pitch.A0;
-import static se.walkercrou.composer.Pitch.G0;
 
 /**
  * Class for commands used for debugging.
@@ -61,14 +56,13 @@ public class TestCommands {
         this.plugin = plugin;
     }
 
-    @Listener
-    public void onGameStarted(GameStartedServerEvent event) {
+    public void register() {
         CommandManager cm = Sponge.getCommandManager();
-        cm.register(this, piano, "piano");
-        cm.register(this, bass, "bass");
-        cm.register(this, pig, "pig");
-        cm.register(this, mary, "mary");
-        cm.register(this, nbs, "nbs");
+        cm.register(plugin, piano, "piano");
+        cm.register(plugin, bass, "bass");
+        cm.register(plugin, pig, "pig");
+        cm.register(plugin, mary, "mary");
+        cm.register(plugin, nbs, "nbs");
     }
 
     public CommandResult readNbsFile(CommandSource src, CommandContext context) throws CommandException {

@@ -139,7 +139,6 @@ public class NoteBlockStudioSong {
     }
 
     private static void readNoteBlocks(NoteBlockStudioSong result, ByteBuffer buffer) throws IOException {
-        System.out.println(result);
         result.noteBlocks = new NoteBlock[result.height + 1][result.lengthTicks + 1];
         short tick = -1;
         short jumps;

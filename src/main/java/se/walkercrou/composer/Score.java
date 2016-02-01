@@ -13,10 +13,11 @@ import java.util.concurrent.TimeUnit;
  * Represents a musical score to be played in game.
  */
 public class Score {
-    private String title, artist;
-    private int tempoBmp;
-    private TimeSignature time;
-    private List<Layer> layers;
+    private final String title, artist;
+    private final int tempoBmp;
+    private final TimeSignature time;
+    private final List<Layer> layers;
+    private Runnable onFinish;
 
     private Score(String title, String artist, int tempoBmp, TimeSignature time, List<Layer> layers) {
         this.title = title;
@@ -71,6 +72,11 @@ public class Score {
         return layers;
     }
 
+    public Score onFinish(Runnable onFinish) {
+        this.onFinish = onFinish;
+        return this;
+    }
+
     /**
      * Plays this score for the specified {@link Viewer} at the specified {@link Vector3d} position.
      *
@@ -116,6 +122,23 @@ public class Score {
                 .submit(context);
     }
 
+    /**
+     * Pauses the song.
+     */
+    public void pause() {
+        if (task != null)
+            task.cancel();
+    }
+
+    /**
+     * Stops the song.
+     */
+    public void finish() {
+        pause();
+        if (onFinish != null)
+            onFinish.run();
+    }
+
     private Task task;
     private int stepsPerBeat;
     private int currentStep = 1;
@@ -129,7 +152,7 @@ public class Score {
         else
             currentStep++;
         if (finished)
-            task.cancel();
+            finish();
     }
 
     /**

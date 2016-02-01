@@ -18,23 +18,33 @@ public class Note {
     private final SoundType instrument;
     private final double pitch;
     private final int type;
+    private final double volume;
 
     /**
      * Creates new Note with the specified {@link Pitch} value and type. The note type corresponds to how many beats
      * it should last. For instance, in common time, a quarter note (type 4) lasts one beat.
-     *
-     * @param instrument of note
+     *  @param instrument of note
      * @param pitch of note
      * @param type of
+     * @param volume of note 1 is full volume
      */
-    public Note(SoundType instrument, double pitch, int type) {
+    public Note(SoundType instrument, double pitch, int type, double volume) {
         this.instrument = instrument;
         this.pitch = pitch;
         this.type = type;
+        this.volume = volume;
+    }
+
+    public Note(double pitch, int type, double volume) {
+        this(SoundTypes.NOTE_PIANO, pitch, type, volume);
+    }
+
+    public Note(SoundType instrument, double pitch, int type) {
+        this(instrument, pitch, type, 1);
     }
 
     public Note(double pitch, int type) {
-        this(SoundTypes.NOTE_PIANO, pitch, type);
+        this(pitch, type, 1);
     }
 
     /**
@@ -73,6 +83,6 @@ public class Note {
      * @param pos to play at
      */
     public void play(Viewer viewer, Vector3d pos) {
-        viewer.playSound(instrument, pos, 2, pitch);
+        viewer.playSound(instrument, pos, volume * 2, pitch);
     }
 }

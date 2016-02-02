@@ -44,6 +44,12 @@ public class Composer {
         loadTracks();
     }
 
+    /**
+     * Returns the specified player's {@link MusicPlayer}. If one does not exist a new one will be created.
+     *
+     * @param player player
+     * @return music player
+     */
     public MusicPlayer getMusicPlayer(Player player) {
         UUID playerId = player.getUniqueId();
         MusicPlayer mp = musicPlayers.get(playerId);

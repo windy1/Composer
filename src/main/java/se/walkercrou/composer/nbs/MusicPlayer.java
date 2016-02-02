@@ -127,8 +127,6 @@ public class MusicPlayer {
      */
     public void skip(Player player, int jumps) {
         int newIndex = currentTrack + jumps;
-        plugin.log.info("old index = " + currentTrack);
-        plugin.log.info("new index = " + newIndex);
         if (newIndex < 0 || newIndex >= tracks.size()) {
             pause();
             currentSong = null;

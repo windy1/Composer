@@ -85,7 +85,7 @@ public class Score {
      * @param viewer to play for
      * @param pos position to play at
      */
-    public void play(Composer context, Viewer viewer, Vector3d pos) {
+    public void play(Object context, Viewer viewer, Vector3d pos) {
         // get the shortest note in score, these will be used to determine how often we "step"
         // for example, if the shortest note is a sixteenth note in common time, we need to step 4 times per beat
         Note shortestNote = null;
@@ -109,12 +109,6 @@ public class Score {
 
         stepsPerBeat = shortestNote.getType() / time.getSingleBeatNote();
 
-        context.log.info("Now playing: \"" + title + "\" by " + artist);
-        context.log.info("Millis per beat : " + millisPerBeat);
-        context.log.info("Millis per step : " + millisPerStep);
-        context.log.info("Steps per beat : " + stepsPerBeat);
-        context.log.info("Layers: " + layers.size());
-
         task = Sponge.getScheduler().createTaskBuilder().async()
                 .execute(() -> nextStep(viewer, pos))
                 .name("\"" + title + "\" by " + artist)
@@ -129,7 +123,7 @@ public class Score {
      * @param context plugin
      * @param viewer player
      */
-    public void play(Composer context, Player viewer) {
+    public void play(Object context, Player viewer) {
         play(context, viewer, null);
     }
 

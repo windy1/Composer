@@ -113,7 +113,7 @@ public class Composer {
         try {
             file.getParentFile().mkdirs();
             file.createNewFile();
-            Files.copy(Composer.class.getResourceAsStream("/default.conf"), configPath,
+            Files.copy(Composer.class.getResourceAsStream("/assets/se/walkercrou/composer/default.conf"), configPath,
                     StandardCopyOption.REPLACE_EXISTING);
         } catch (IOException e) {
             e.printStackTrace();

@@ -26,7 +26,12 @@ import java.util.*;
 /**
  * Main class for Composer plugin.
  */
-@Plugin(id = "composer", name = "Composer", version = "1.0.0")
+@Plugin(id = "se.walkercrou.composer",
+        name = "Composer",
+        version = "1.1.0",
+        description = "Update for SpongeAPI 4.1.0",
+        url = "https://ore-staging.spongepowered.org/windy/Composer",
+        authors = { "windy" })
 public class Composer {
     @Inject public Logger log;
     @Inject @DefaultConfig(sharedRoot = false) private Path configPath;

@@ -2,7 +2,7 @@ package se.walkercrou.composer.util;
 
 import org.spongepowered.api.Sponge;
 import org.spongepowered.api.command.CommandException;
-import org.spongepowered.api.service.pagination.PaginationBuilder;
+import org.spongepowered.api.service.pagination.PaginationList;
 import org.spongepowered.api.service.pagination.PaginationService;
 import org.spongepowered.api.text.Text;
 import org.spongepowered.api.text.action.TextActions;
@@ -27,7 +27,7 @@ public final class TextUtil {
      * @return pagination builder
      * @throws CommandException if list is empty
      */
-    public static PaginationBuilder trackList(List<NoteBlockStudioSong> tracks) throws CommandException {
+    public static PaginationList.Builder trackList(List<NoteBlockStudioSong> tracks) throws CommandException {
         List<Text> trackListings = new ArrayList<>();
         for (int i = 0; i < tracks.size(); i++) {
             trackListings.add(TextUtil.track(tracks.get(i))
@@ -69,7 +69,7 @@ public final class TextUtil {
                                 .build())
                         .build())
                 .footer(Text.builder("Click a track to start playing.").color(TextColors.GRAY).build())
-                .paddingString("-");
+                .padding(Text.of("-"));
     }
 
     /**

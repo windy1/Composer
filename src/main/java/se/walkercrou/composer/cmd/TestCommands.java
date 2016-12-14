@@ -1,5 +1,17 @@
 package se.walkercrou.composer.cmd;
 
+import static org.spongepowered.api.effect.sound.SoundTypes.BLOCK_NOTE_BASS;
+import static se.walkercrou.composer.Note.HALF;
+import static se.walkercrou.composer.Note.QUARTER;
+import static se.walkercrou.composer.Note.WHOLE;
+import static se.walkercrou.composer.Pitch.A0;
+import static se.walkercrou.composer.Pitch.A1;
+import static se.walkercrou.composer.Pitch.B0;
+import static se.walkercrou.composer.Pitch.B1;
+import static se.walkercrou.composer.Pitch.D2;
+import static se.walkercrou.composer.Pitch.G0;
+import static se.walkercrou.composer.Pitch.G1;
+
 import org.spongepowered.api.Sponge;
 import org.spongepowered.api.command.CommandException;
 import org.spongepowered.api.command.CommandManager;
@@ -12,15 +24,15 @@ import org.spongepowered.api.effect.sound.SoundType;
 import org.spongepowered.api.effect.sound.SoundTypes;
 import org.spongepowered.api.entity.living.player.Player;
 import org.spongepowered.api.text.Text;
-import se.walkercrou.composer.*;
+import se.walkercrou.composer.Composer;
+import se.walkercrou.composer.Measure;
+import se.walkercrou.composer.Note;
+import se.walkercrou.composer.Score;
+import se.walkercrou.composer.TimeSignature;
 import se.walkercrou.composer.nbs.NoteBlockStudioSong;
 
 import java.io.File;
 import java.io.IOException;
-
-import static org.spongepowered.api.effect.sound.SoundTypes.NOTE_BASS;
-import static se.walkercrou.composer.Note.*;
-import static se.walkercrou.composer.Pitch.*;
 
 /**
  * Class for commands used for debugging.
@@ -30,17 +42,17 @@ public class TestCommands {
     private final CommandSpec piano = CommandSpec.builder()
             .description(Text.of("Plays a piano note"))
             .arguments(GenericArguments.onlyOne(GenericArguments.doubleNum(Text.of("pitch"))))
-            .executor(((src, args) -> playNote(src, args, SoundTypes.NOTE_PIANO)))
+            .executor(((src, args) -> playNote(src, args, SoundTypes.BLOCK_NOTE_HARP)))
             .build();
     private final CommandSpec bass = CommandSpec.builder()
             .description(Text.of("Plays a bass note"))
             .arguments(GenericArguments.onlyOne(GenericArguments.doubleNum(Text.of("pitch"))))
-            .executor((src, args) -> playNote(src, args, SoundTypes.NOTE_BASS))
+            .executor((src, args) -> playNote(src, args, BLOCK_NOTE_BASS))
             .build();
     private final CommandSpec pig = CommandSpec.builder()
             .description(Text.of("Plays a pig note"))
             .arguments(GenericArguments.onlyOne(GenericArguments.doubleNum(Text.of("pitch"))))
-            .executor((src, args) -> playNote(src, args, SoundTypes.PIG_IDLE))
+            .executor((src, args) -> playNote(src, args, SoundTypes.ENTITY_PIG_AMBIENT))
             .build();
     private final CommandSpec mary = CommandSpec.builder()
             .description(Text.of("Plays \"Mary Had a Little Lamb\" by Sarah Josepha Hale"))
@@ -106,8 +118,8 @@ public class TestCommands {
         Measure m7 = new Measure(qa1, qa1, qb1, qa1); // fleece was white as
         Measure m8 = new Measure(new Note(G1, WHOLE));
 
-        Measure bbass = new Measure(new Note(NOTE_BASS, B0, WHOLE));
-        Measure abass = new Measure(new Note(NOTE_BASS, A0, WHOLE));
+        Measure bbass = new Measure(new Note(BLOCK_NOTE_BASS, B0, WHOLE));
+        Measure abass = new Measure(new Note(BLOCK_NOTE_BASS, A0, WHOLE));
 
         Player player = (Player) src;
         new Score.Builder()

@@ -26,16 +26,13 @@ import java.util.*;
 /**
  * Main class for Composer plugin.
  */
-@Plugin(id = "se.walkercrou.composer",
-        name = "Composer",
-        version = "1.1.0",
-        description = "Update for SpongeAPI 4.1.0",
-        url = "https://ore-staging.spongepowered.org/windy/Composer",
-        authors = { "windy" })
+@Plugin(id = "composer", authors = { "windy" })
 public class Composer {
+
     @Inject public Logger log;
     @Inject @DefaultConfig(sharedRoot = false) private Path configPath;
     @Inject @DefaultConfig(sharedRoot = false) private ConfigurationLoader<CommentedConfigurationNode> configLoader;
+
     private ConfigurationNode config;
     private final List<NoteBlockStudioSong> nbsTracks = new ArrayList<>();
     private final Map<UUID, MusicPlayer> musicPlayers = new HashMap<>();

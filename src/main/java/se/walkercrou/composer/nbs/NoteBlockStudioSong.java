@@ -1,12 +1,21 @@
 package se.walkercrou.composer.nbs;
 
-import org.apache.commons.io.IOUtils;
+import com.google.common.io.ByteStreams;
 import org.apache.commons.lang3.builder.ToStringBuilder;
 import org.spongepowered.api.effect.sound.SoundType;
 import org.spongepowered.api.effect.sound.SoundTypes;
-import se.walkercrou.composer.*;
+import se.walkercrou.composer.Layer;
+import se.walkercrou.composer.Measure;
+import se.walkercrou.composer.Note;
+import se.walkercrou.composer.Pitch;
+import se.walkercrou.composer.Score;
+import se.walkercrou.composer.TimeSignature;
 
-import java.io.*;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.IOException;
+import java.io.InputStream;
 import java.nio.ByteBuffer;
 import java.nio.ByteOrder;
 
@@ -103,7 +112,7 @@ public class NoteBlockStudioSong {
             throw new FileNotFoundException();
         NoteBlockStudioSong result = new NoteBlockStudioSong();
         InputStream in = new FileInputStream(file);
-        byte[] bytes = IOUtils.toByteArray(in);
+        byte[] bytes = ByteStreams.toByteArray(in);
         ByteBuffer buffer = ByteBuffer.wrap(bytes).order(ByteOrder.LITTLE_ENDIAN);
         readHeader(result, buffer);
         readNoteBlocks(result, buffer);
@@ -187,15 +196,15 @@ public class NoteBlockStudioSong {
             switch (instrument) {
                 default:
                 case 0:
-                    return SoundTypes.NOTE_PIANO;
+                    return SoundTypes.BLOCK_NOTE_HARP;
                 case 1:
-                    return SoundTypes.NOTE_BASS_GUITAR;
+                    return SoundTypes.BLOCK_NOTE_BASS;
                 case 2:
-                    return SoundTypes.NOTE_BASS_DRUM;
+                    return SoundTypes.BLOCK_NOTE_BASEDRUM;
                 case 3:
-                    return SoundTypes.NOTE_SNARE_DRUM;
+                    return SoundTypes.BLOCK_NOTE_SNARE;
                 case 4:
-                    return SoundTypes.NOTE_PLING;
+                    return SoundTypes.BLOCK_NOTE_PLING;
             }
         }
 

@@ -37,7 +37,7 @@ public class Note {
     }
 
     public Note(double pitch, int type, double volume) {
-        this(SoundTypes.NOTE_PIANO, pitch, type, volume);
+        this(SoundTypes.BLOCK_NOTE_HARP, pitch, type, volume);
     }
 
     public Note(SoundType instrument, double pitch, int type) {

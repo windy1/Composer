@@ -1,4 +1,5 @@
-# Composer [![Codacy Badge](https://api.codacy.com/project/badge/Grade/e14287e74fb44aeeb1c294ff7959076e)](https://www.codacy.com/app/sarhatabaot/Composer?utm_source=github.com&amp;utm_medium=referral&amp;utm_content=sarhatabaot/Composer&amp;utm_campaign=Badge_Grade)
+# Composer [![Codacy Badge](https://api.codacy.com/project/badge/Grade/e14287e74fb44aeeb1c294ff7959076e)](https://www.codacy.com/app/sarhatabaot/Composer?utm_source=github.com&amp;utm_medium=referral&amp;utm_content=sarhatabaot/Composer&amp;utm_campaign=Badge_Grade) [![Build Status](https://travis-ci.org/sarhatabaot/Composer.svg?branch=api-7)](https://travis-ci.org/sarhatabaot/Composer)
+
 #### This version has been updated to work with Sponge API v7.
 Composer is a full featured note block music importer and player. Import Note Block Studio 151 files by placing them in the config/composer/tracks/ directory and the plugin will automatically load them on start.
 

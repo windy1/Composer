@@ -24,6 +24,7 @@ import org.spongepowered.api.effect.sound.SoundType;
 import org.spongepowered.api.effect.sound.SoundTypes;
 import org.spongepowered.api.entity.living.player.Player;
 import org.spongepowered.api.text.Text;
+import org.spongepowered.api.util.annotation.NonnullByDefault;
 import se.walkercrou.composer.Composer;
 import se.walkercrou.composer.score.Measure;
 import se.walkercrou.composer.score.Note;
@@ -77,7 +78,8 @@ public class TestCommands {
         cm.register(plugin, nbs, "nbs");
     }
 
-    public CommandResult readNbsFile(CommandSource src, CommandContext context) throws CommandException {
+    @NonnullByDefault
+    private CommandResult readNbsFile(CommandSource src, CommandContext context) throws CommandException {
         if (!(src instanceof Player))
             throw new CommandException(Text.of("Only players may run this command."));
 
@@ -95,14 +97,16 @@ public class TestCommands {
         return CommandResult.success();
     }
 
-    public CommandResult playNote(CommandSource src, CommandContext context, SoundType type) {
+    @NonnullByDefault
+    private CommandResult playNote(CommandSource src, CommandContext context, SoundType type) {
         Player player = (Player) src;
         double pitch = context.<Double>getOne("pitch").get();
         player.getWorld().playSound(type, player.getLocation().getPosition(), 2, pitch);
         return CommandResult.success();
     }
 
-    public CommandResult playSong(CommandSource src, CommandContext context) throws CommandException {
+    @NonnullByDefault
+    private CommandResult playSong(CommandSource src, CommandContext context) throws CommandException {
         if (!(src instanceof Player))
             throw new CommandException(Text.of("Only players may run this command."));
 

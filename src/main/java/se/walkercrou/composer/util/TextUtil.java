@@ -18,6 +18,7 @@ import java.util.List;
  */
 public final class TextUtil {
     private TextUtil() {
+        throw new IllegalStateException("Util class");
     }
 
     /**

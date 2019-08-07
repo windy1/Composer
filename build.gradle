@@ -1,10 +1,17 @@
 plugins {
-    id 'org.spongepowered.plugin' version '0.7'
+    id 'java'
+    id 'org.spongepowered.plugin' version '0.9.0'
+    id "io.freefair.lombok" version "3.8.4"
 }
 
+compileJava.options.encoding = 'UTF-8'
+
 group = 'se.walkercrou'
-version = '2.0.0'
+version = '2.1.0'
 description = 'Note block music importer and player.'
+
+sourceCompatibility = '1.8'
+targetCompatibility = '1.8'
 
 sponge.plugin {
     id = 'composer'
@@ -13,6 +20,10 @@ sponge.plugin {
     }
 }
 
+repositories {
+    jcenter()
+}
+
 dependencies {
-    compile 'org.spongepowered:spongeapi:5.0.0'
+    compile 'org.spongepowered:spongeapi:7.1.0'
 }

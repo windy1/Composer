@@ -1,15 +1,17 @@
 package se.walkercrou.composer.nbs;
 
 import com.google.common.io.ByteStreams;
+import lombok.AllArgsConstructor;
+import lombok.Getter;
 import org.apache.commons.lang3.builder.ToStringBuilder;
 import org.spongepowered.api.effect.sound.SoundType;
 import org.spongepowered.api.effect.sound.SoundTypes;
-import se.walkercrou.composer.Layer;
-import se.walkercrou.composer.Measure;
-import se.walkercrou.composer.Note;
+import se.walkercrou.composer.score.Layer;
+import se.walkercrou.composer.score.Measure;
+import se.walkercrou.composer.score.Note;
 import se.walkercrou.composer.Pitch;
-import se.walkercrou.composer.Score;
-import se.walkercrou.composer.TimeSignature;
+import se.walkercrou.composer.score.Score;
+import se.walkercrou.composer.score.TimeSignature;
 
 import java.io.File;
 import java.io.FileInputStream;
@@ -24,30 +26,32 @@ import java.nio.ByteOrder;
  *
  * @see <a href="http://www.stuffbydavid.com/mcnbs">http://www.stuffbydavid.com/mcnbs</a>
  */
+@Getter
 public class NoteBlockStudioSong {
     // ---- Header ---
-    public short lengthTicks;
-    public short height; // amount of layers
-    public String name;
-    public String author, ogAuthor;
-    public String description;
-    public double tempoTicksPerSecond;
-    public boolean autoSave;
-    public byte autoSaveDuration;
-    public byte timeSignature;
-    public int minutesSpent;
-    public int leftClicks, rightClicks;
-    public int blocksAdded, blocksRemoved;
-    public String importedFileName;
+    private short lengthTicks;
+    private short height; // amount of layers
+    private String name;
+    private String author;
+    private String ogAuthor;
+    private String description;
+    private double tempoTicksPerSecond;
+    private boolean autoSave;
+    private byte autoSaveDuration;
+    private byte timeSignature;
+    private int minutesSpent;
+    private int leftClicks;
+    private int rightClicks;
+    private int blocksAdded;
+    private int blocksRemoved;
+    private String importedFileName;
 
     // ---- Note Blocks ----
-    public NoteBlock[][] noteBlocks;
+    private NoteBlock[][] noteBlocks;
 
     // ---- Layer info ----
-    public LayerInfo[] layerInfo;
+    private LayerInfo[] layerInfo;
 
-    private NoteBlockStudioSong() {
-    }
 
     /**
      * Converts this song into a {@link Score}.
@@ -71,7 +75,7 @@ public class NoteBlockStudioSong {
                     currentMeasure[beat - 1] = Note.rest(Note.QUARTER);
                 else {
                     // make sure key is within two octave range
-                    int key = note.key;
+                    int key = note.getKey();
                     while (key < 33)
                         key += 12;
                     while (key > 57)
@@ -178,9 +182,10 @@ public class NoteBlockStudioSong {
     /**
      * Represents a single note block within the song.
      */
+    @Getter
     public static class NoteBlock {
-        public final byte instrument;
-        public final byte key;
+        private final byte instrument;
+        private final byte key;
 
         private NoteBlock(byte instrument, byte key) {
             this.instrument = instrument;
@@ -217,9 +222,10 @@ public class NoteBlockStudioSong {
     /**
      * Represents some meta data relating to a layer of the song.
      */
+    @Getter
     public static class LayerInfo {
-        public final String name;
-        public final byte volume;
+        private final String name;
+        private final byte volume;
 
         private LayerInfo(String name, byte volume) {
             this.name = name;

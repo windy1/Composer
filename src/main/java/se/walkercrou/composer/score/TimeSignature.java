@@ -1,4 +1,4 @@
-package se.walkercrou.composer;
+package se.walkercrou.composer.score;
 
 /**
  * Represents a musical time signature within a {@link Score}.
@@ -13,7 +13,8 @@ public class TimeSignature {
      */
     public static final TimeSignature CUT = new TimeSignature(2, 2);
 
-    private final int beatsPerMeasure, singleBeatNote;
+    private final int beatsPerMeasure;
+    private final int singleBeatNote;
 
     /**
      * Creates a new TimeSignature. The first parameter represents the upper number in a traditional key signature

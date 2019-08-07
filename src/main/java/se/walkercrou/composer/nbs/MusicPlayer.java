@@ -4,7 +4,7 @@ import org.spongepowered.api.entity.living.player.Player;
 import org.spongepowered.api.text.Text;
 import org.spongepowered.api.text.format.TextColors;
 import se.walkercrou.composer.Composer;
-import se.walkercrou.composer.Score;
+import se.walkercrou.composer.score.Score;
 import se.walkercrou.composer.util.TextUtil;
 
 import java.util.ArrayList;

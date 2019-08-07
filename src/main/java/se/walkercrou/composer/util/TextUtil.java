@@ -79,11 +79,11 @@ public final class TextUtil {
      * @return listing
      */
     public static Text.Builder track(NoteBlockStudioSong track) {
-        return Text.builder(strOrUnknown(track.name))
+        return Text.builder(strOrUnknown(track.getName()))
                 .color(TextColors.GREEN)
                 .append(Text.builder(" by ").color(TextColors.GRAY).build())
-                .append(Text.builder(strOrUnknown(track.ogAuthor).equals("Unknown")
-                        ? strOrUnknown(track.author) : track.ogAuthor)
+                .append(Text.builder(strOrUnknown(track.getOgAuthor()).equals("Unknown")
+                        ? strOrUnknown(track.getOgAuthor()) : track.getOgAuthor())
                         .color(TextColors.GREEN)
                         .build());
     }

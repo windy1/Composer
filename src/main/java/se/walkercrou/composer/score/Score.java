@@ -1,4 +1,4 @@
-package se.walkercrou.composer;
+package se.walkercrou.composer.score;
 
 import com.flowpowered.math.vector.Vector3d;
 import org.spongepowered.api.Sponge;
@@ -14,11 +14,16 @@ import java.util.concurrent.TimeUnit;
  * Represents a musical score to be played in game.
  */
 public class Score {
-    private final String title, artist;
+    private final String title;
+    private final String artist;
     private final int tempoBmp;
     private final TimeSignature time;
     private final List<Layer> layers;
     private Runnable onFinish;
+
+    private Task task;
+    private int stepsPerBeat;
+    private int currentStep = 1;
 
     private Score(String title, String artist, int tempoBmp, TimeSignature time, List<Layer> layers) {
         this.title = title;
@@ -144,9 +149,6 @@ public class Score {
             onFinish.run();
     }
 
-    private Task task;
-    private int stepsPerBeat;
-    private int currentStep = 1;
 
     private void nextStep(Viewer viewer, Vector3d pos) {
         boolean finished = true;
@@ -164,7 +166,8 @@ public class Score {
      * Builder class for {@link Score} object.
      */
     public static class Builder {
-        private String title, artist;
+        private String title;
+        private String artist;
         private int tempoBmp;
         private TimeSignature time;
         protected final List<Layer> layers = new ArrayList<>();

@@ -1,4 +1,4 @@
-package se.walkercrou.composer;
+package se.walkercrou.composer.score;
 
 import com.flowpowered.math.vector.Vector3d;
 import org.spongepowered.api.effect.Viewer;
@@ -15,6 +15,13 @@ public class Layer {
     private final TimeSignature time;
     private final List<Measure> measures;
 
+    private int currentBeat = 1;
+    private int currentMeasure = 1;
+    private int hold = 1;
+    private int noteIndex = 0;
+    private boolean finished = false;
+
+
     private Layer(TimeSignature time, List<Measure> measures) {
         this.time = time;
         this.measures = measures;
@@ -28,12 +35,6 @@ public class Layer {
     public List<Measure> getMeasures() {
         return measures;
     }
-
-    private int currentBeat = 1;
-    private int currentMeasure = 1;
-    private int hold = 1;
-    private int noteIndex = 0;
-    private boolean finished = false;
 
     protected boolean onStep(Viewer viewer, Vector3d pos, int currentStep, int stepsPerBeat) {
         if (finished)

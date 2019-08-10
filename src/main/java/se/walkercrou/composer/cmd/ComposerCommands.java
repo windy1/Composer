@@ -9,6 +9,7 @@ import org.spongepowered.api.command.args.CommandContext;
 import org.spongepowered.api.command.spec.CommandSpec;
 import org.spongepowered.api.entity.living.player.Player;
 import org.spongepowered.api.text.Text;
+import org.spongepowered.api.util.annotation.NonnullByDefault;
 import se.walkercrou.composer.Composer;
 import se.walkercrou.composer.util.TextUtil;
 import se.walkercrou.composer.nbs.MusicPlayer;
@@ -85,31 +86,36 @@ public class ComposerCommands {
         Sponge.getCommandManager().register(plugin, base, "music", "composer");
     }
 
-    public CommandResult previousTrack(CommandSource src, CommandContext context) throws CommandException {
+    @NonnullByDefault
+    private CommandResult previousTrack(CommandSource src, CommandContext context) throws CommandException {
         Player player = getPlayer(src, context);
         plugin.getMusicPlayer(player).previous(player);
         return CommandResult.success();
     }
 
-    public CommandResult nextTrack(CommandSource src, CommandContext context) throws CommandException {
+    @NonnullByDefault
+    private CommandResult nextTrack(CommandSource src, CommandContext context) throws CommandException {
         Player player = getPlayer(src, context);
         plugin.getMusicPlayer(player).next(player);
         return CommandResult.success();
     }
 
-    public CommandResult printPlayQueue(CommandSource src, CommandContext context) throws CommandException {
+    @NonnullByDefault
+    private CommandResult printPlayQueue(CommandSource src, CommandContext context) throws CommandException {
         Player player = getPlayer(src, context);
         TextUtil.trackList(plugin.getMusicPlayer(player).getTracks()).sendTo(src);
         return CommandResult.success();
     }
 
-    public CommandResult shuffleTracks(CommandSource src, CommandContext context) throws CommandException {
+    @NonnullByDefault
+    private CommandResult shuffleTracks(CommandSource src, CommandContext context) throws CommandException {
         Player player = getPlayer(src, context);
         plugin.getMusicPlayer(player).shuffle(player);
         return CommandResult.success();
     }
 
-    public CommandResult resumeTrack(CommandSource src, CommandContext context) throws CommandException {
+    @NonnullByDefault
+    private CommandResult resumeTrack(CommandSource src, CommandContext context) throws CommandException {
         Player player = getPlayer(src, context);
         MusicPlayer mp = plugin.getMusicPlayer(player);
         if (mp.isPlaying())
@@ -118,7 +124,8 @@ public class ComposerCommands {
         return CommandResult.success();
     }
 
-    public CommandResult pauseTrack(CommandSource src, CommandContext context) throws CommandException {
+    @NonnullByDefault
+    private CommandResult pauseTrack(CommandSource src, CommandContext context) throws CommandException {
         Player player = getPlayer(src, context);
         MusicPlayer mp = plugin.getMusicPlayer(player);
         if (!mp.isPlaying())
@@ -127,14 +134,16 @@ public class ComposerCommands {
         return CommandResult.success();
     }
 
-    public CommandResult playTrack(CommandSource src, CommandContext context) throws CommandException {
+    @NonnullByDefault
+    private CommandResult playTrack(CommandSource src, CommandContext context) throws CommandException {
         int trackIndex = context.<Integer>getOne("trackNumber").get() - 1;
         Player player = getPlayer(src, context);
         plugin.getMusicPlayer(player).play(player, trackIndex);
         return CommandResult.success();
     }
 
-    public CommandResult listTracks(CommandSource source, CommandContext context) throws CommandException {
+    @NonnullByDefault
+    private CommandResult listTracks(CommandSource source, CommandContext context) throws CommandException {
         TextUtil.trackList(plugin.getNbsTracks()).sendTo(source);
         return CommandResult.success();
     }

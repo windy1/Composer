@@ -1,9 +1,10 @@
-package se.walkercrou.composer;
+package se.walkercrou.composer.score;
 
 import com.flowpowered.math.vector.Vector3d;
 import org.spongepowered.api.effect.Viewer;
 import org.spongepowered.api.effect.sound.SoundType;
 import org.spongepowered.api.effect.sound.SoundTypes;
+import se.walkercrou.composer.Pitch;
 
 /**
  * Represents a single note in a {@link Measure}.

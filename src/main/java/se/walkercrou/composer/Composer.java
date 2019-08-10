@@ -1,6 +1,7 @@
 package se.walkercrou.composer;
 
 import com.google.inject.Inject;
+import lombok.Getter;
 import ninja.leaping.configurate.ConfigurationNode;
 import ninja.leaping.configurate.commented.CommentedConfigurationNode;
 import ninja.leaping.configurate.loader.ConfigurationLoader;
@@ -10,6 +11,7 @@ import org.spongepowered.api.entity.living.player.Player;
 import org.spongepowered.api.event.Listener;
 import org.spongepowered.api.event.game.state.GameStartedServerEvent;
 import org.spongepowered.api.plugin.Plugin;
+import org.spongepowered.api.scheduler.Task;
 import se.walkercrou.composer.cmd.ComposerCommands;
 import se.walkercrou.composer.cmd.TestCommands;
 import se.walkercrou.composer.nbs.MusicPlayer;
@@ -29,9 +31,13 @@ import java.util.*;
 @Plugin(id = "composer", authors = { "windy" })
 public class Composer {
 
-    @Inject public Logger log;
-    @Inject @DefaultConfig(sharedRoot = false) private Path configPath;
-    @Inject @DefaultConfig(sharedRoot = false) private ConfigurationLoader<CommentedConfigurationNode> configLoader;
+    @Inject
+    @Getter
+    private Logger logger;
+    @Inject @DefaultConfig(sharedRoot = false)
+    private Path configPath;
+    @Inject @DefaultConfig(sharedRoot = false)
+    private ConfigurationLoader<CommentedConfigurationNode> configLoader;
 
     private ConfigurationNode config;
     private final List<NoteBlockStudioSong> nbsTracks = new ArrayList<>();
@@ -43,11 +49,14 @@ public class Composer {
         if (config.getNode("debugMode").getBoolean())
             new TestCommands(this).register();
         new ComposerCommands(this).register();
-        loadTracks();
+        Task.Builder taskBuilder = Task.builder();
+        taskBuilder.execute(new LoadTracksRunnable()).submit(this);
+        //loadTracks();
     }
 
     /**
-     * Returns the specified player's {@link MusicPlayer}. If one does not exist a new one will be created.
+     * Returns the specified player's {@link MusicPlayer}.
+     * If one does not exist a new one will be created.
      *
      * @param player player
      * @return music player
@@ -55,8 +64,10 @@ public class Composer {
     public MusicPlayer getMusicPlayer(Player player) {
         UUID playerId = player.getUniqueId();
         MusicPlayer mp = musicPlayers.get(playerId);
-        if (mp == null)
-            musicPlayers.put(playerId, mp = new MusicPlayer(this, getNbsTracks()));
+        if (mp == null) {
+            mp = new MusicPlayer(this, getNbsTracks());
+            musicPlayers.put(playerId, mp);
+        }
         return mp;
     }
 
@@ -69,14 +80,17 @@ public class Composer {
         return Collections.unmodifiableList(nbsTracks);
     }
 
-    private void loadTracks() {
-        File file = new File(configPath.toFile().getParentFile(), "tracks");
-        if (!file.exists())
-            file.mkdirs();
+    public class LoadTracksRunnable implements Runnable {
+        @Override
+        public void run() {
+            File file = new File(configPath.toFile().getParentFile(), "tracks");
+            if (!file.exists()) {
+                file.mkdirs();
+                logger.info("Created tracks folder.");
+            }
 
-        new Thread(() -> {
             double progress = 0;
-            int total = file.list((d, n) -> n.endsWith(".nbs")).length;
+            int total = Objects.requireNonNull(file.list((d, n) -> n.endsWith(".nbs"))).length;
             progress(progress);
             try (DirectoryStream<Path> stream = Files.newDirectoryStream(file.toPath(), "*.nbs")) {
                 for (Path path : stream) {
@@ -84,19 +98,18 @@ public class Composer {
                         nbsTracks.add(NoteBlockStudioSong.read(path.toFile()));
                         progress(++progress / total * 100);
                     } catch (IOException e) {
-                        log.error("Could not read file (file is likely malformed): " + path, e);
+                        logger.error("Could not read file (file is likely malformed): " + path, e);
                     }
                 }
+                logger.info("Loaded %d tracks.",total);
             } catch (IOException e) {
-                log.error("An error occurred while loading the tracks.", e);
+                logger.error("An error occurred while loading the tracks.", e);
             }
-
-        }).start();
-
+        }
     }
 
     private void progress(double p) {
-        log.info("Loading tracks: " + (int) p + "%");
+        getLogger().info("Loading tracks: " + (int) p + "%");
     }
 
     private void setupConfig() {
@@ -106,8 +119,8 @@ public class Composer {
         try {
             config = configLoader.load();
         } catch (IOException e) {
-            e.printStackTrace();
-            log.error("An error occurred while loading the config file.", e);
+            getLogger().info(e.getMessage());
+            getLogger().error("An error occurred while loading the config file.", e);
         }
     }
 
@@ -118,8 +131,8 @@ public class Composer {
             Files.copy(Composer.class.getResourceAsStream("/assets/se/walkercrou/composer/default.conf"), configPath,
                     StandardCopyOption.REPLACE_EXISTING);
         } catch (IOException e) {
-            e.printStackTrace();
-            log.error("An error occurred while creating default config.", e);
+            getLogger().error(e.getMessage());
+            logger.error("An error occurred while creating default config.", e);
         }
     }
 }

@@ -1,4 +1,4 @@
-package se.walkercrou.composer;
+package se.walkercrou.composer.score;
 
 /**
  * Represents a single measure within a {@link Score}.

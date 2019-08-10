@@ -1,9 +1,9 @@
 package se.walkercrou.composer.cmd;
 
 import static org.spongepowered.api.effect.sound.SoundTypes.BLOCK_NOTE_BASS;
-import static se.walkercrou.composer.Note.HALF;
-import static se.walkercrou.composer.Note.QUARTER;
-import static se.walkercrou.composer.Note.WHOLE;
+import static se.walkercrou.composer.score.Note.HALF;
+import static se.walkercrou.composer.score.Note.QUARTER;
+import static se.walkercrou.composer.score.Note.WHOLE;
 import static se.walkercrou.composer.Pitch.A0;
 import static se.walkercrou.composer.Pitch.A1;
 import static se.walkercrou.composer.Pitch.B0;
@@ -24,11 +24,12 @@ import org.spongepowered.api.effect.sound.SoundType;
 import org.spongepowered.api.effect.sound.SoundTypes;
 import org.spongepowered.api.entity.living.player.Player;
 import org.spongepowered.api.text.Text;
+import org.spongepowered.api.util.annotation.NonnullByDefault;
 import se.walkercrou.composer.Composer;
-import se.walkercrou.composer.Measure;
-import se.walkercrou.composer.Note;
-import se.walkercrou.composer.Score;
-import se.walkercrou.composer.TimeSignature;
+import se.walkercrou.composer.score.Measure;
+import se.walkercrou.composer.score.Note;
+import se.walkercrou.composer.score.Score;
+import se.walkercrou.composer.score.TimeSignature;
 import se.walkercrou.composer.nbs.NoteBlockStudioSong;
 
 import java.io.File;
@@ -77,7 +78,8 @@ public class TestCommands {
         cm.register(plugin, nbs, "nbs");
     }
 
-    public CommandResult readNbsFile(CommandSource src, CommandContext context) throws CommandException {
+    @NonnullByDefault
+    private CommandResult readNbsFile(CommandSource src, CommandContext context) throws CommandException {
         if (!(src instanceof Player))
             throw new CommandException(Text.of("Only players may run this command."));
 
@@ -95,14 +97,16 @@ public class TestCommands {
         return CommandResult.success();
     }
 
-    public CommandResult playNote(CommandSource src, CommandContext context, SoundType type) {
+    @NonnullByDefault
+    private CommandResult playNote(CommandSource src, CommandContext context, SoundType type) {
         Player player = (Player) src;
         double pitch = context.<Double>getOne("pitch").get();
         player.getWorld().playSound(type, player.getLocation().getPosition(), 2, pitch);
         return CommandResult.success();
     }
 
-    public CommandResult playSong(CommandSource src, CommandContext context) throws CommandException {
+    @NonnullByDefault
+    private CommandResult playSong(CommandSource src, CommandContext context) throws CommandException {
         if (!(src instanceof Player))
             throw new CommandException(Text.of("Only players may run this command."));
 

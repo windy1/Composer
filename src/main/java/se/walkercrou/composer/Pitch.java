@@ -54,5 +54,6 @@ public final class Pitch {
     };
 
     private Pitch() {
+        throw new IllegalStateException("Utility class");
     }
 }

@@ -7,7 +7,7 @@ plugins {
 compileJava.options.encoding = 'UTF-8'
 
 group = 'se.walkercrou'
-version = '2.1.0'
+version = '4.0.0'
 description = 'Note block music importer and player.'
 
 sourceCompatibility = '1.8'

@@ -26,6 +26,7 @@ import org.spongepowered.api.entity.living.player.Player;
 import org.spongepowered.api.text.Text;
 import org.spongepowered.api.util.annotation.NonnullByDefault;
 import se.walkercrou.composer.Composer;
+import se.walkercrou.composer.exception.CorruptedFileException;
 import se.walkercrou.composer.score.Measure;
 import se.walkercrou.composer.score.Note;
 import se.walkercrou.composer.score.Score;
@@ -86,7 +87,7 @@ public class TestCommands {
         NoteBlockStudioSong nbs;
         try {
             nbs = NoteBlockStudioSong.read(new File(context.<String>getOne("file").get()));
-        } catch (IOException e) {
+        } catch (IOException| CorruptedFileException e) {
             e.printStackTrace();
             throw new CommandException(Text.of("Error reading NBS file"), e);
         }

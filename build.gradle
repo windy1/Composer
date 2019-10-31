@@ -1,13 +1,13 @@
 plugins {
     id 'java'
     id 'org.spongepowered.plugin' version '0.9.0'
-    id "io.freefair.lombok" version "3.8.4"
+    id "io.freefair.lombok" version "4.1.3"
 }
 
 compileJava.options.encoding = 'UTF-8'
 
 group = 'se.walkercrou'
-version = '4.0.0'
+version = '4.0.1'
 description = 'Note block music importer and player.'
 
 sourceCompatibility = '1.8'

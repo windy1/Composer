@@ -1,11 +1,11 @@
 package se.walkercrou.composer.nbs;
 
 import com.google.common.io.ByteStreams;
-import lombok.AllArgsConstructor;
 import lombok.Getter;
 import org.apache.commons.lang3.builder.ToStringBuilder;
 import org.spongepowered.api.effect.sound.SoundType;
 import org.spongepowered.api.effect.sound.SoundTypes;
+import se.walkercrou.composer.exception.CorruptedFileException;
 import se.walkercrou.composer.score.Layer;
 import se.walkercrou.composer.score.Measure;
 import se.walkercrou.composer.score.Note;
@@ -111,7 +111,7 @@ public class NoteBlockStudioSong {
      * @return song data
      * @throws IOException
      */
-    public static NoteBlockStudioSong read(File file) throws IOException {
+    public static NoteBlockStudioSong read(File file) throws IOException, CorruptedFileException {
         if (!file.exists())
             throw new FileNotFoundException();
         NoteBlockStudioSong result = new NoteBlockStudioSong();
@@ -126,10 +126,10 @@ public class NoteBlockStudioSong {
 
     private static String getString(ByteBuffer in) throws IOException {
         int len = in.getInt();
-        String str = "";
+        StringBuilder str = new StringBuilder();
         for (int i = 0; i < len; i++)
-            str += (char) in.get();
-        return str;
+            str.append((char) in.get());
+        return str.toString();
     }
 
     private static void readHeader(NoteBlockStudioSong result, ByteBuffer buffer) throws IOException {
@@ -151,7 +151,7 @@ public class NoteBlockStudioSong {
         result.importedFileName = getString(buffer);
     }
 
-    private static void readNoteBlocks(NoteBlockStudioSong result, ByteBuffer buffer) throws IOException {
+    private static void readNoteBlocks(NoteBlockStudioSong result, ByteBuffer buffer) throws IOException, CorruptedFileException {
         result.noteBlocks = new NoteBlock[result.height + 1][result.lengthTicks + 1];
         short tick = -1;
         short jumps;
@@ -168,10 +168,16 @@ public class NoteBlockStudioSong {
                 layer += jumps;
                 byte instrument = buffer.get();
                 byte key = buffer.get();
-                result.noteBlocks[layer][tick] = new NoteBlock(instrument, key);
+                try {
+                    result.noteBlocks[layer][tick] = new NoteBlock(instrument, key);
+                } catch (ArrayIndexOutOfBoundsException e){
+                    throw new CorruptedFileException("Most likely a corrupted file..");
+                }
             }
         }
     }
+
+
 
     private static void readLayerInfo(NoteBlockStudioSong result, ByteBuffer buffer) throws IOException {
         result.layerInfo = new LayerInfo[result.height + 1];

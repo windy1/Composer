@@ -2,6 +2,7 @@ package se.walkercrou.composer;
 
 import com.google.inject.Inject;
 import lombok.Getter;
+import lombok.Setter;
 import ninja.leaping.configurate.ConfigurationNode;
 import ninja.leaping.configurate.commented.CommentedConfigurationNode;
 import ninja.leaping.configurate.loader.ConfigurationLoader;
@@ -14,6 +15,7 @@ import org.spongepowered.api.plugin.Plugin;
 import org.spongepowered.api.scheduler.Task;
 import se.walkercrou.composer.cmd.ComposerCommands;
 import se.walkercrou.composer.cmd.TestCommands;
+import se.walkercrou.composer.exception.CorruptedFileException;
 import se.walkercrou.composer.nbs.MusicPlayer;
 import se.walkercrou.composer.nbs.NoteBlockStudioSong;
 
@@ -28,8 +30,10 @@ import java.util.*;
 /**
  * Main class for Composer plugin.
  */
-@Plugin(id = "composer", authors = { "windy" })
+@Plugin(id = "composer", authors = { "windy","sarhatabaot" })
 public class Composer {
+    @Getter @Setter
+    private static Composer instance;
 
     @Inject
     @Getter
@@ -46,6 +50,7 @@ public class Composer {
     @Listener
     public void onGameStarted(GameStartedServerEvent event) {
         setupConfig();
+        setInstance(this);
         if (config.getNode("debugMode").getBoolean())
             new TestCommands(this).register();
         new ComposerCommands(this).register();
@@ -97,7 +102,7 @@ public class Composer {
                     try {
                         nbsTracks.add(NoteBlockStudioSong.read(path.toFile()));
                         progress(++progress / total * 100);
-                    } catch (IOException e) {
+                    } catch (IOException| CorruptedFileException e) {
                         logger.error("Could not read file (file is likely malformed): " + path, e);
                     }
                 }

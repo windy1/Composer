@@ -106,7 +106,7 @@ public class Composer {
                         logger.error("Could not read file (file is likely malformed): " + path, e);
                     }
                 }
-                logger.info("Loaded %d tracks.",total);
+                logger.info(String.format("Loaded %d tracks.",total));
             } catch (IOException e) {
                 logger.error("An error occurred while loading the tracks.", e);
             }

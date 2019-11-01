@@ -26,4 +26,5 @@ repositories {
 
 dependencies {
     compile 'org.spongepowered:spongeapi:7.1.0'
+    compile 'org.jetbrains:annotations:17.0.0'
 }

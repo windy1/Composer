@@ -1,3 +1,5 @@
+import org.apache.tools.ant.filters.ReplaceTokens
+
 plugins {
     id 'java'
     id 'org.spongepowered.plugin' version '0.9.0'
@@ -10,13 +12,12 @@ group = 'se.walkercrou'
 version = '4.0.1'
 description = 'Note block music importer and player.'
 
-sourceCompatibility = '1.8'
-targetCompatibility = '1.8'
+sourceCompatibility = targetCompatibility = '1.8'
 
-sponge.plugin {
-    id = 'composer'
-    meta {
-        name = "Composer"
+
+processResources {
+    from(sourceSets.main.resources.srcDirs) {
+        filter ReplaceTokens, tokens: [version: version]
     }
 }
 
@@ -26,5 +27,6 @@ repositories {
 
 dependencies {
     compile 'org.spongepowered:spongeapi:7.1.0'
+    annotationProcessor 'org.spongepowered:spongeapi:7.1.0'
     compile 'org.jetbrains:annotations:17.0.0'
 }

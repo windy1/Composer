@@ -30,7 +30,12 @@ import java.util.*;
 /**
  * Main class for Composer plugin.
  */
-@Plugin(id = "composer", authors = { "windy","sarhatabaot" })
+@Plugin(id = "composer",
+        name = "Composer",
+        version = "4.0.1",
+        url = "https://github.com/sarhatabaot/Composer",
+        description = "Music player that plays nbs files.",
+        authors = { "windy","sarhatabaot" })
 public class Composer {
     @Getter @Setter
     private static Composer instance;

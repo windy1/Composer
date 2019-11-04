@@ -32,9 +32,7 @@ import java.util.*;
  */
 @Plugin(id = "composer",
         name = "Composer",
-        version = "4.0.1",
         url = "https://github.com/sarhatabaot/Composer",
-        description = "Music player that plays nbs files.",
         authors = { "windy","sarhatabaot" })
 public class Composer {
     @Getter @Setter
@@ -48,6 +46,7 @@ public class Composer {
     @Inject @DefaultConfig(sharedRoot = false)
     private ConfigurationLoader<CommentedConfigurationNode> configLoader;
 
+    @Getter
     private ConfigurationNode config;
     private final List<NoteBlockStudioSong> nbsTracks = new ArrayList<>();
     private final Map<UUID, MusicPlayer> musicPlayers = new HashMap<>();
@@ -91,6 +90,10 @@ public class Composer {
     }
 
     public class LoadTracksRunnable implements Runnable {
+        private void progress(double p) {
+            getLogger().info("Loading tracks: " + (int) p + "%");
+        }
+
         @Override
         public void run() {
             File file = new File(configPath.toFile().getParentFile(), "tracks");
@@ -116,10 +119,6 @@ public class Composer {
                 logger.error("An error occurred while loading the tracks.", e);
             }
         }
-    }
-
-    private void progress(double p) {
-        getLogger().info("Loading tracks: " + (int) p + "%");
     }
 
     private void setupConfig() {

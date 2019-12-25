@@ -9,7 +9,7 @@ import se.walkercrou.composer.exception.CorruptedFileException;
 import se.walkercrou.composer.score.Layer;
 import se.walkercrou.composer.score.Measure;
 import se.walkercrou.composer.score.Note;
-import se.walkercrou.composer.Pitch;
+import se.walkercrou.composer.util.PitchUtils;
 import se.walkercrou.composer.score.Score;
 import se.walkercrou.composer.score.TimeSignature;
 
@@ -82,7 +82,7 @@ public class NoteBlockStudioSong {
                         key -= 12;
                     key -= 33;
 
-                    currentMeasure[beat - 1] = new Note(note.getInstrument(), Pitch.TWO_OCTAVES[key], Note.QUARTER,
+                    currentMeasure[beat - 1] = new Note(note.getInstrument(), PitchUtils.TWO_OCTAVES[key], Note.QUARTER,
                             layerInfo[i].volume / 100d);
                 }
 

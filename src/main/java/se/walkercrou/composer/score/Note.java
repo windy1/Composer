@@ -4,7 +4,7 @@ import com.flowpowered.math.vector.Vector3d;
 import org.spongepowered.api.effect.Viewer;
 import org.spongepowered.api.effect.sound.SoundType;
 import org.spongepowered.api.effect.sound.SoundTypes;
-import se.walkercrou.composer.Pitch;
+import se.walkercrou.composer.util.PitchUtils;
 
 /**
  * Represents a single note in a {@link Measure}.
@@ -22,7 +22,7 @@ public class Note {
     private final double volume;
 
     /**
-     * Creates new Note with the specified {@link Pitch} value and type. The note type corresponds to how many beats
+     * Creates new Note with the specified {@link PitchUtils} value and type. The note type corresponds to how many beats
      * it should last. For instance, in common time, a quarter note (type 4) lasts one beat.
      *
      *  @param instrument of note
@@ -53,7 +53,7 @@ public class Note {
      * Returns the "Minecraft" pitch of this note.
      *
      * @return pitch
-     * @see Pitch
+     * @see PitchUtils
      */
     public double getPitch() {
         return pitch;

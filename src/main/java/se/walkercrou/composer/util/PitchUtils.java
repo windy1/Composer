@@ -1,11 +1,11 @@
-package se.walkercrou.composer;
+package se.walkercrou.composer.util;
 
 import org.spongepowered.api.effect.sound.SoundType;
 
 /**
  * Represents a pitch value for a {@link SoundType}. Minecraft's accepted pitches span two octaves from F#0 to F#2.
  */
-public final class Pitch {
+public final class PitchUtils {
     public static final double FSHARP0 = 0;
     public static final double G0 = 0.53;
     public static final double GSHARP0 = 0.56;
@@ -53,7 +53,7 @@ public final class Pitch {
             B1, C2, CSHARP2, D2, DSHARP2, E2, F2, FSHARP2
     };
 
-    private Pitch() {
+    private PitchUtils() {
         throw new IllegalStateException("Utility class");
     }
 }

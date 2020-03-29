@@ -90,9 +90,7 @@ public class Composer {
     }
 
     public class LoadTracksRunnable implements Runnable {
-        private void progress(double p) {
-            getLogger().info("Loading tracks: " + (int) p + "%");
-        }
+
 
         @Override
         public void run() {
@@ -107,19 +105,34 @@ public class Composer {
             progress(progress);
             try (DirectoryStream<Path> stream = Files.newDirectoryStream(file.toPath(), "*.nbs")) {
                 for (Path path : stream) {
-                    try {
-                        nbsTracks.add(NoteBlockStudioSong.read(path.toFile()));
+                    if(addTrack(path))
                         progress(++progress / total * 100);
-                    } catch (IOException| CorruptedFileException e) {
-                        logger.error("Could not read file (file is likely malformed): " + path, e);
-                    }
                 }
-                logger.info(String.format("Loaded %d tracks.",total));
+                logger.info(String.format("Loaded %d/%d tracks.",nbsTracks.size(),total));
             } catch (IOException e) {
                 logger.error("An error occurred while loading the tracks.", e);
             }
         }
+
+
+        private void progress(double p) {
+            getLogger().info("Loading tracks: " + (int) p + "%");
+        }
+
+
+        private boolean addTrack(final Path path){
+            try {
+                nbsTracks.add(NoteBlockStudioSong.read(path.toFile()));
+                return true;
+            } catch (IOException| CorruptedFileException e) {
+                logger.error("Could not read file (file is likely malformed): %s",path);
+                logger.debug(e.getMessage());
+            }
+            return false;
+        }
     }
+
+
 
     private void setupConfig() {
         File file = configPath.toFile();

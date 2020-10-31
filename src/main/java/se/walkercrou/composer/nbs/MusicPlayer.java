@@ -5,6 +5,7 @@ import org.spongepowered.api.text.Text;
 import org.spongepowered.api.text.format.TextColor;
 import org.spongepowered.api.text.format.TextColors;
 import se.walkercrou.composer.Composer;
+import se.walkercrou.composer.Playlist;
 import se.walkercrou.composer.score.Score;
 import se.walkercrou.composer.util.TextUtil;
 
@@ -17,7 +18,7 @@ import java.util.List;
  */
 public class MusicPlayer {
 	private final Composer plugin;
-	private final List<NoteBlockStudioSong> tracks;
+	private Playlist tracks;
 	private int currentTrack = 0;
 	private Score currentSong;
 	private boolean playing = false;
@@ -30,7 +31,7 @@ public class MusicPlayer {
 	 */
 	public MusicPlayer(Composer plugin, List<NoteBlockStudioSong> tracks) {
 		this.plugin = plugin;
-		this.tracks = new ArrayList<>(tracks);
+		this.tracks = new Playlist(tracks);
 	}
 
 	/**
@@ -39,7 +40,11 @@ public class MusicPlayer {
 	 * @return current track
 	 */
 	public NoteBlockStudioSong getCurrentTrack() {
-		return tracks.get(currentTrack);
+		return tracks.getTracks().get(currentTrack);
+	}
+
+	public void setPlaylist(final Playlist playlist){
+		this.tracks = playlist;
 	}
 
 	/**
@@ -48,7 +53,7 @@ public class MusicPlayer {
 	 * @return tracks in player
 	 */
 	public List<NoteBlockStudioSong> getTracks() {
-		return Collections.unmodifiableList(tracks);
+		return Collections.unmodifiableList(tracks.getTracks());
 	}
 
 	/**
@@ -83,7 +88,7 @@ public class MusicPlayer {
 			return;
 		}
 
-		currentSong = tracks.get(currentTrack).toScore().onFinish(() -> next(player));
+		currentSong = tracks.getTracks().get(currentTrack).toScore().onFinish(() -> next(player));
 
 		player.sendMessage(Text.builder("Now playing: ")
 				.color(TextColors.GOLD)
@@ -118,7 +123,7 @@ public class MusicPlayer {
 	 * @param player player
 	 */
 	public void shuffle(Player player) {
-		Collections.shuffle(tracks);
+		Collections.shuffle(tracks.getTracks());
 		if (currentSong != null) {
 			currentSong.pause();
 			currentSong = null;
@@ -135,7 +140,7 @@ public class MusicPlayer {
 	 */
 	public void skip(Player player, int jumps) {
 		int newIndex = currentTrack + jumps;
-		if (newIndex < 0 || newIndex >= tracks.size()) {
+		if (newIndex < 0 || newIndex >= tracks.getTracks().size()) {
 			pause();
 			currentSong = null;
 			currentTrack = 0;

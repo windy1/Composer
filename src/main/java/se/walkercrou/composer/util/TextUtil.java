@@ -8,6 +8,8 @@ import org.spongepowered.api.text.Text;
 import org.spongepowered.api.text.action.TextActions;
 import org.spongepowered.api.text.format.TextColors;
 import org.spongepowered.api.text.format.TextStyles;
+import se.walkercrou.composer.Composer;
+import se.walkercrou.composer.Playlist;
 import se.walkercrou.composer.nbs.NoteBlockStudioSong;
 
 import java.util.ArrayList;
@@ -73,6 +75,24 @@ public final class TextUtil {
                 .padding(Text.of("-"));
     }
 
+    public static PaginationList.Builder playlistList() throws CommandException {
+        List<Text> playlistListing = new ArrayList<>();
+        for(Playlist playlist: Composer.getInstance().getPlaylists().values()){
+            playlistListing.add(TextUtil.playlist(playlist)
+                    .onClick(TextActions.runCommand("/music playlist "+getPlaylistName(playlist))).build());
+        }
+
+        if(playlistListing.isEmpty())
+            throw new CommandException(Text.of("There aren't any loaded playlists."));
+
+        return Sponge.getServiceManager().provide(PaginationService.class).get().builder()
+                .contents(playlistListing)
+                .title(Text.builder("Playlists").color(TextColors.GOLD).build())
+                .footer(Text.builder("Click a playlist to select it.").color(TextColors.GRAY).build())
+                .padding(Text.of("-"));
+
+    }
+
     /**
      * Returns a track listing Text for the specified track.
      *
@@ -87,6 +107,19 @@ public final class TextUtil {
                         ? strOrUnknown(track.getOgAuthor()) : track.getOgAuthor())
                         .color(TextColors.GREEN)
                         .build());
+    }
+
+    public static Text.Builder playlist(Playlist playlist){
+        return Text.builder(getPlaylistName(playlist))
+                .color(TextColors.GREEN)
+                .onHover(TextActions.showText(Text.of(playlist.getTracks().size()+" tracks")));
+    }
+
+    public static String getPlaylistName(final Playlist playlist){
+        return Composer.getInstance().getPlaylists().keySet()
+                .stream()
+                .filter(key -> playlist.equals(Composer.getInstance().getPlaylists().get(key)))
+                .findFirst().get();
     }
 
     private static String strOrUnknown(String str) {

@@ -5,6 +5,7 @@ import org.spongepowered.api.command.CommandException;
 import org.spongepowered.api.service.pagination.PaginationList;
 import org.spongepowered.api.service.pagination.PaginationService;
 import org.spongepowered.api.text.Text;
+import org.spongepowered.api.text.action.ShiftClickAction;
 import org.spongepowered.api.text.action.TextActions;
 import org.spongepowered.api.text.format.TextColors;
 import org.spongepowered.api.text.format.TextStyles;
@@ -23,6 +24,8 @@ public final class TextUtil {
         throw new IllegalStateException("Util class");
     }
 
+
+
     /**
      * Returns a pagination builder for the specified tracks.
      *
@@ -35,6 +38,14 @@ public final class TextUtil {
         for (int i = 0; i < tracks.size(); i++) {
             trackListings.add(TextUtil.track(tracks.get(i))
                     .onClick(TextActions.runCommand("/music > " + (i + 1)))
+                    .onHover(TextActions.showText(Text.of("Click to play.")))
+                    .append(Text.of("  "))
+                    .append(Text.builder("Play Once")
+                            .color(TextColors.DARK_GRAY)
+                            .onClick(TextActions.runCommand("/music play-one" + (i +1)))
+                            .onHover(TextActions.showText(Text.of("Click to play once.")))
+                            .build()
+                    )
                     .build());
         }
 

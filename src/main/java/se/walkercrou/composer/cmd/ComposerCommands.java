@@ -98,6 +98,14 @@ public class ComposerCommands {
             .description(Text.of("Stops a track"))
             .executor(this::stopTrack)
             .build();
+    private final CommandSpec playOnce = CommandSpec.builder()
+            .arguments(flags()
+                    .valueFlag(player(Text.of("player")), "p")
+                    .buildWith(integer(Text.of("trackNumber")))
+            )
+            .description(Text.of("Plays a track once."))
+            .executor(this::playOnce)
+            .build();
     private final CommandSpec base = CommandSpec.builder()
             .permission("composer.musicplayer")
             .description(Text.of("Main parent command for plugin."))
@@ -115,6 +123,7 @@ public class ComposerCommands {
             .child(loopPlaylist,"loop-all","loop-playlist")
             .child(selectPlaylist,"playlist")
             .child(listPlaylists,"list-playlist","playlists")
+            .child(playOnce,"play-once")
             .build();
 
     public ComposerCommands(Composer plugin) {
@@ -252,6 +261,15 @@ public class ComposerCommands {
         }
 
         TextUtil.playlistList().sendTo(source);
+        return CommandResult.success();
+    }
+    @NonnullByDefault
+    private CommandResult playOnce(final  CommandSource source, final CommandContext context) throws CommandException {
+        Player player = getPlayer(source,context);
+        int trackIndex = context.<Integer>getOne("trackNumber").get() - 1;
+        final MusicPlayer musicPlayer = plugin.getMusicPlayer(player);
+        musicPlayer.play(player,trackIndex);
+        musicPlayer.getCurrentTrack().toScore().onFinish(() -> musicPlayer.stop(player));
         return CommandResult.success();
     }
 

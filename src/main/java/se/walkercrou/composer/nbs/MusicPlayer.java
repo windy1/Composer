@@ -89,11 +89,7 @@ public class MusicPlayer {
 			return;
 		}
 		if(loopTrack)
-			currentSong = tracks.getTracks().get(currentTrack).toScore().onFinish(() -> {
-				int current = currentTrack;
-				currentSong.finish();
-				play(player,current);
-			});
+			currentSong = tracks.getTracks().get(currentTrack).toScore().onFinish(() -> stop(player));
 		else {
 			currentSong = tracks.getTracks().get(currentTrack).toScore().onFinish(() -> next(player));
 		}

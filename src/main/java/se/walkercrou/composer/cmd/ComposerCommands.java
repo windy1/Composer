@@ -170,6 +170,10 @@ public class ComposerCommands {
         if (!mp.isPlaying())
             throw new CommandException(Text.of("No music playing."));
         mp.pause();
+        player.sendMessage(Text.builder("Paused: ")
+                .color(TextColors.GOLD)
+                .append(TextUtil.track(mp.getCurrentTrack()).build())
+                .build());
         return CommandResult.success();
     }
 
@@ -211,6 +215,9 @@ public class ComposerCommands {
         Player player = getPlayer(source,context);
         final MusicPlayer musicPlayer = plugin.getMusicPlayer(player);
         musicPlayer.setLoopTrack(!musicPlayer.isLoopTrack());
+        player.sendMessage(Text.builder("Turned track looping ")
+                .color(TextColors.GOLD)
+                .append(Text.of(onOrOff(musicPlayer.isLoopTrack()))).build());
         return CommandResult.success();
     }
 
@@ -219,7 +226,14 @@ public class ComposerCommands {
         Player player = getPlayer(source,context);
         final MusicPlayer musicPlayer = plugin.getMusicPlayer(player);
         musicPlayer.setLoopPlaylist(!musicPlayer.isLoopPlaylist());
+        player.sendMessage(Text.builder("Turned playlist looping ")
+                .color(TextColors.GOLD)
+                .append(onOrOff(musicPlayer.isLoopPlaylist()).build()).build());
         return CommandResult.success();
+    }
+
+    private Text.Builder onOrOff(boolean value) {
+        return value ? Text.builder("on").color(TextColors.GREEN) : Text.builder("off").color(TextColors.RED);
     }
 
     @NonnullByDefault

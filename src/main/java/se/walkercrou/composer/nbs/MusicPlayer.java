@@ -1,16 +1,13 @@
 package se.walkercrou.composer.nbs;
 
-import org.spongepowered.api.command.CommandResult;
 import org.spongepowered.api.entity.living.player.Player;
 import org.spongepowered.api.text.Text;
-import org.spongepowered.api.text.format.TextColor;
 import org.spongepowered.api.text.format.TextColors;
 import se.walkercrou.composer.Composer;
 import se.walkercrou.composer.Playlist;
 import se.walkercrou.composer.score.Score;
 import se.walkercrou.composer.util.TextUtil;
 
-import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
@@ -85,7 +82,7 @@ public class MusicPlayer {
 		} else if (currentSong != null && playing) {
 			currentSong.pause();
 			playing = false;
-			player.sendMessage(Text.builder("Stopped: ")
+			player.sendMessage(Text.builder("Paused: ")
 					.color(TextColors.GOLD)
 					.append(TextUtil.track(getCurrentTrack()).build())
 					.build());
@@ -120,7 +117,7 @@ public class MusicPlayer {
 	}
 
 	/**
-	 * Pauses the player.
+	 * Pauses the {@link MusicPlayer}.
 	 */
 	public void pause() {
 		playing = false;
@@ -129,13 +126,22 @@ public class MusicPlayer {
 		}
 	}
 
+	/**
+	 * Stops the {@link MusicPlayer}
+	 * @param player
+	 */
 	public void stop(Player player) {
 		playing = false;
+		pause();
 		int current = currentTrack;
 		currentSong.onFinish(() -> {
 			currentSong.finish();
 			play(player,current);
 		});
+		player.sendMessage(Text.builder("Stopped: ")
+				.color(TextColors.GOLD)
+				.append(TextUtil.track(getCurrentTrack()).build())
+				.build());
 	}
 
 	/**

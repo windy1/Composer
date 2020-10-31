@@ -93,13 +93,19 @@ public class ComposerCommands {
             .description(Text.of("Loops a playlist"))
             .executor(this::loopPlaylist)
             .build();
+    private final CommandSpec stop = CommandSpec.builder()
+            .arguments(optional(player(Text.of("player"))))
+            .description(Text.of("Stops a track"))
+            .executor(this::stopTrack)
+            .build();
     private final CommandSpec base = CommandSpec.builder()
             .permission("composer.musicplayer")
             .description(Text.of("Main parent command for plugin."))
             .executor(this::listTracks)
             .child(list, "list", "list-tracks", "tracks", "track-list")
             .child(play, "play", "start", ">")
-            .child(pause, "pause", "stop", "||")
+            .child(pause, "pause", "||")
+            .child(stop,"stop")
             .child(resume, "resume")
             .child(shuffle, "shuffle")
             .child(queue, "queue", "order")
@@ -213,6 +219,13 @@ public class ComposerCommands {
         Player player = getPlayer(source,context);
         final MusicPlayer musicPlayer = plugin.getMusicPlayer(player);
         musicPlayer.setLoopPlaylist(!musicPlayer.isLoopPlaylist());
+        return CommandResult.success();
+    }
+
+    @NonnullByDefault
+    private CommandResult stopTrack(final CommandSource source, final CommandContext context) throws CommandException {
+        Player player = getPlayer(source,context);
+        plugin.getMusicPlayer(player).stop(player);
         return CommandResult.success();
     }
 

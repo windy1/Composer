@@ -93,8 +93,9 @@ public class MusicPlayer {
 		}
 		if(loopTrack)
 			currentSong = tracks.getTracks().get(currentTrack).toScore().onFinish(() -> {
+				int current = currentTrack;
 				currentSong.finish();
-				currentSong.play(plugin,player);
+				play(player,current);
 			});
 		else {
 			currentSong = tracks.getTracks().get(currentTrack).toScore().onFinish(() -> next(player));
@@ -124,11 +125,17 @@ public class MusicPlayer {
 	public void pause() {
 		playing = false;
 		if (currentSong != null) {
-			if (Composer.getInstance().getConfig().getNode("stop-not-pause").getBoolean())
-				currentSong.finish();
-			else
-				currentSong.pause();
+			currentSong.pause();
 		}
+	}
+
+	public void stop(Player player) {
+		playing = false;
+		int current = currentTrack;
+		currentSong.onFinish(() -> {
+			currentSong.finish();
+			play(player,current);
+		});
 	}
 
 	/**

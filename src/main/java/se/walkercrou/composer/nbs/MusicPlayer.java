@@ -1,5 +1,6 @@
 package se.walkercrou.composer.nbs;
 
+import org.spongepowered.api.command.CommandResult;
 import org.spongepowered.api.entity.living.player.Player;
 import org.spongepowered.api.text.Text;
 import org.spongepowered.api.text.format.TextColor;
@@ -22,6 +23,9 @@ public class MusicPlayer {
 	private int currentTrack = 0;
 	private Score currentSong;
 	private boolean playing = false;
+
+	private boolean loopTrack;
+	private boolean loopPlaylist;
 
 	/**
 	 * Creates a new MusicPlayer with the specified tracks.
@@ -87,8 +91,14 @@ public class MusicPlayer {
 					.build());
 			return;
 		}
-
-		currentSong = tracks.getTracks().get(currentTrack).toScore().onFinish(() -> next(player));
+		if(loopTrack)
+			currentSong = tracks.getTracks().get(currentTrack).toScore().onFinish(() -> {
+				currentSong.finish();
+				currentSong.play(plugin,player);
+			});
+		else {
+			currentSong = tracks.getTracks().get(currentTrack).toScore().onFinish(() -> next(player));
+		}
 
 		player.sendMessage(Text.builder("Now playing: ")
 				.color(TextColors.GOLD)
@@ -113,8 +123,12 @@ public class MusicPlayer {
 	 */
 	public void pause() {
 		playing = false;
-		if (currentSong != null)
-			currentSong.pause();
+		if (currentSong != null) {
+			if (Composer.getInstance().getConfig().getNode("stop-not-pause").getBoolean())
+				currentSong.finish();
+			else
+				currentSong.pause();
+		}
 	}
 
 	/**
@@ -141,10 +155,14 @@ public class MusicPlayer {
 	public void skip(Player player, int jumps) {
 		int newIndex = currentTrack + jumps;
 		if (newIndex < 0 || newIndex >= tracks.getTracks().size()) {
-			pause();
-			currentSong = null;
-			currentTrack = 0;
-			return;
+			if(loopPlaylist){
+				newIndex = 0;
+			} else {
+				pause();
+				currentSong = null;
+				currentTrack = 0;
+				return;
+			}
 		}
 		play(player, newIndex);
 	}
@@ -165,5 +183,21 @@ public class MusicPlayer {
 	 */
 	public void previous(Player player) {
 		skip(player, -1);
+	}
+
+	public void setLoopTrack(final boolean loopTrack) {
+		this.loopTrack = loopTrack;
+	}
+
+	public void setLoopPlaylist(final boolean loopPlaylist) {
+		this.loopPlaylist = loopPlaylist;
+	}
+
+	public boolean isLoopTrack() {
+		return loopTrack;
+	}
+
+	public boolean isLoopPlaylist() {
+		return loopPlaylist;
 	}
 }

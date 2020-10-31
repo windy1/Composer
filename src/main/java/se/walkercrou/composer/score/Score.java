@@ -140,6 +140,7 @@ public class Score {
             task.cancel();
     }
 
+
     /**
      * Stops the song.
      */

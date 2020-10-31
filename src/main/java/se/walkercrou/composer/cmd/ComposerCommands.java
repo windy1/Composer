@@ -83,6 +83,16 @@ public class ComposerCommands {
             .description(Text.of("Lists all available playlists."))
             .executor(this::listPlaylists)
             .build();
+    private final CommandSpec loopTrack = CommandSpec.builder()
+            .arguments(optional(player(Text.of("player"))))
+            .description(Text.of("Loops a track"))
+            .executor(this::loopTrack)
+            .build();
+    private final CommandSpec loopPlaylist = CommandSpec.builder()
+            .arguments(optional(player(Text.of("player"))))
+            .description(Text.of("Loops a playlist"))
+            .executor(this::loopPlaylist)
+            .build();
     private final CommandSpec base = CommandSpec.builder()
             .permission("composer.musicplayer")
             .description(Text.of("Main parent command for plugin."))
@@ -95,6 +105,8 @@ public class ComposerCommands {
             .child(queue, "queue", "order")
             .child(next, "next", "skip", ">|")
             .child(previous, "previous", "back", "|<")
+            .child(loopTrack,"loop","loop-track")
+            .child(loopPlaylist,"loop-all","loop-playlist")
             .child(selectPlaylist,"playlist")
             .child(listPlaylists,"list-playlist","playlists")
             .build();
@@ -185,6 +197,22 @@ public class ComposerCommands {
             TextUtil.trackList(plugin.getMusicPlayer((Player)source).getTracks()).sendTo(source);
         else
             TextUtil.trackList(plugin.getNbsTracks()).sendTo(source);
+        return CommandResult.success();
+    }
+
+    @NonnullByDefault
+    private CommandResult loopTrack(final CommandSource source, final CommandContext context) throws  CommandException {
+        Player player = getPlayer(source,context);
+        final MusicPlayer musicPlayer = plugin.getMusicPlayer(player);
+        musicPlayer.setLoopTrack(!musicPlayer.isLoopTrack());
+        return CommandResult.success();
+    }
+
+    @NonnullByDefault
+    private CommandResult loopPlaylist(final CommandSource source, final CommandContext context) throws CommandException {
+        Player player = getPlayer(source,context);
+        final MusicPlayer musicPlayer = plugin.getMusicPlayer(player);
+        musicPlayer.setLoopPlaylist(!musicPlayer.isLoopPlaylist());
         return CommandResult.success();
     }
 

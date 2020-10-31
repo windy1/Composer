@@ -11,16 +11,19 @@ import org.spongepowered.api.command.args.CommandContext;
 import org.spongepowered.api.command.spec.CommandSpec;
 import org.spongepowered.api.entity.living.player.Player;
 import org.spongepowered.api.text.Text;
+import org.spongepowered.api.text.action.TextActions;
 import org.spongepowered.api.text.format.TextColors;
-import org.spongepowered.api.text.format.TextStyle;
-import org.spongepowered.api.util.Color;
 import org.spongepowered.api.util.annotation.NonnullByDefault;
 import se.walkercrou.composer.Composer;
 import se.walkercrou.composer.Playlist;
 import se.walkercrou.composer.util.TextUtil;
 import se.walkercrou.composer.nbs.MusicPlayer;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import static org.spongepowered.api.command.args.GenericArguments.*;
+import static se.walkercrou.composer.util.TextUtil.getPlaylistName;
 
 /**
  * Main commands for plugin.
@@ -175,27 +178,28 @@ public class ComposerCommands {
         return CommandResult.success();
     }
 
-    private String getPlaylistName(final Playlist playlist){
-        return Composer.getInstance().getPlaylists().keySet()
-                .stream()
-                .filter(key -> playlist.equals(Composer.getInstance().getPlaylists().get(key)))
-                .findFirst().get();
-    }
 
     @NonnullByDefault
     private CommandResult listTracks(CommandSource source, CommandContext context) throws CommandException {
         if(Composer.getInstance().getConfig().getNode("use-playlists").getBoolean())
             TextUtil.trackList(plugin.getMusicPlayer((Player)source).getTracks()).sendTo(source);
-        TextUtil.trackList(plugin.getNbsTracks()).sendTo(source);
+        else
+            TextUtil.trackList(plugin.getNbsTracks()).sendTo(source);
         return CommandResult.success();
     }
 
     @NonnullByDefault
     private CommandResult listPlaylists(final CommandSource source,final CommandContext context) throws CommandException {
         Player player = (Player) source;
-        player.sendMessage(Text.of(StringUtils.join(Composer.getInstance().getPlaylists().keySet(),"\n")));
+        if(!Composer.getInstance().getConfig().getNode("use-playlists").getBoolean()){
+            player.sendMessage(Text.builder("Playlists are disabled.").color(TextColors.RED).build());
+            return CommandResult.success();
+        }
+
+        TextUtil.playlistList().sendTo(source);
         return CommandResult.success();
     }
+
 
     private Player getPlayer(CommandSource src, CommandContext context) throws CommandException {
         Player player = context.<Player>getOne("player").orElse(null);

@@ -1,5 +1,7 @@
 package se.walkercrou.composer.cmd;
 
+import org.apache.commons.lang3.StringUtils;
+import org.jetbrains.annotations.NotNull;
 import org.spongepowered.api.Sponge;
 import org.spongepowered.api.command.CommandException;
 import org.spongepowered.api.command.CommandPermissionException;
@@ -9,8 +11,12 @@ import org.spongepowered.api.command.args.CommandContext;
 import org.spongepowered.api.command.spec.CommandSpec;
 import org.spongepowered.api.entity.living.player.Player;
 import org.spongepowered.api.text.Text;
+import org.spongepowered.api.text.format.TextColors;
+import org.spongepowered.api.text.format.TextStyle;
+import org.spongepowered.api.util.Color;
 import org.spongepowered.api.util.annotation.NonnullByDefault;
 import se.walkercrou.composer.Composer;
+import se.walkercrou.composer.Playlist;
 import se.walkercrou.composer.util.TextUtil;
 import se.walkercrou.composer.nbs.MusicPlayer;
 
@@ -64,6 +70,16 @@ public class ComposerCommands {
             .description(Text.of("Goes back to the previous song in the queue."))
             .executor(this::previousTrack)
             .build();
+    private final CommandSpec selectPlaylist = CommandSpec.builder()
+            .arguments(new PlaylistCommandElement(Text.of("playlist"))
+                    ,optional(player(Text.of("player"))))
+            .description(Text.of("Selects a playlist"))
+            .executor(this::selectPlaylist)
+            .build();
+    private final CommandSpec listPlaylists = CommandSpec.builder()
+            .description(Text.of("Lists all available playlists."))
+            .executor(this::listPlaylists)
+            .build();
     private final CommandSpec base = CommandSpec.builder()
             .permission("composer.musicplayer")
             .description(Text.of("Main parent command for plugin."))
@@ -76,6 +92,8 @@ public class ComposerCommands {
             .child(queue, "queue", "order")
             .child(next, "next", "skip", ">|")
             .child(previous, "previous", "back", "|<")
+            .child(selectPlaylist,"playlist")
+            .child(listPlaylists,"list-playlist","playlists")
             .build();
 
     public ComposerCommands(Composer plugin) {
@@ -143,8 +161,39 @@ public class ComposerCommands {
     }
 
     @NonnullByDefault
+    private @NotNull CommandResult selectPlaylist(CommandSource src, CommandContext context) throws CommandException {
+        Player player = getPlayer(src,context);
+        Playlist playlist = context.<Playlist>getOne("playlist").get();
+        if(playlist == null)
+            throw new CommandException(Text.of("This playlist doesn't exist."));
+
+        plugin.getMusicPlayer(player).setPlaylist(playlist);
+        player.sendMessage(Text.builder("Selected: ")
+                .color(TextColors.GOLD)
+                .append(Text.of(getPlaylistName(playlist)))
+                .build());
+        return CommandResult.success();
+    }
+
+    private String getPlaylistName(final Playlist playlist){
+        return Composer.getInstance().getPlaylists().keySet()
+                .stream()
+                .filter(key -> playlist.equals(Composer.getInstance().getPlaylists().get(key)))
+                .findFirst().get();
+    }
+
+    @NonnullByDefault
     private CommandResult listTracks(CommandSource source, CommandContext context) throws CommandException {
+        if(Composer.getInstance().getConfig().getNode("use-playlists").getBoolean())
+            TextUtil.trackList(plugin.getMusicPlayer((Player)source).getTracks()).sendTo(source);
         TextUtil.trackList(plugin.getNbsTracks()).sendTo(source);
+        return CommandResult.success();
+    }
+
+    @NonnullByDefault
+    private CommandResult listPlaylists(final CommandSource source,final CommandContext context) throws CommandException {
+        Player player = (Player) source;
+        player.sendMessage(Text.of(StringUtils.join(Composer.getInstance().getPlaylists().keySet(),"\n")));
         return CommandResult.success();
     }
 

@@ -123,8 +123,11 @@ public class Composer {
 					logger.info("Created default playlist folder.");
 				}
 				for(File playlistDir: playlists.listFiles()){
-					if(playlistDir.isDirectory())
+					if(playlistDir.isDirectory()) {
 						loadTracks(playlistDir);
+						logger.info("Loaded "+playlistDir.getName());
+					}
+
 				}
 			} else {
 				loadTracks(file);
@@ -172,7 +175,7 @@ public class Composer {
 			try {
 				return NoteBlockStudioSong.read(path.toFile());
 			} catch (IOException | CorruptedFileException e) {
-				logger.error("Could not read file (file is likely malformed): %s", path);
+				logger.error("Could not read file (file is likely malformed): "+ path);
 				logger.debug(e.getMessage());
 			}
 			return null;

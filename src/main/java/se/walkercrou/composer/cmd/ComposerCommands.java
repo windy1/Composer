@@ -218,11 +218,17 @@ public class ComposerCommands {
     }
 
     @NonnullByDefault
-    //TODO doesn't work
     private CommandResult loopTrack(final CommandSource source, final CommandContext context) throws  CommandException {
         Player player = getPlayer(source,context);
         final MusicPlayer musicPlayer = plugin.getMusicPlayer(player);
         musicPlayer.setLoopTrack(!musicPlayer.isLoopTrack());
+        musicPlayer.getCurrentTrack().toScore().onFinish(() -> {
+            try {
+                previousTrack(source,context);
+            } catch (CommandException e) {
+                e.printStackTrace();
+            }
+        });
         player.sendMessage(Text.builder("Turned track looping ")
                 .color(TextColors.GOLD)
                 .append(Text.of(onOrOff(musicPlayer.isLoopTrack()))).build());
@@ -262,21 +268,13 @@ public class ComposerCommands {
         TextUtil.playlistList().sendTo(source);
         return CommandResult.success();
     }
+
     @NonnullByDefault
-    //TODO doesn't work
     private CommandResult playOnce(final  CommandSource source, final CommandContext context) throws CommandException {
         Player player = getPlayer(source,context);
         int trackIndex = context.<Integer>getOne("trackNumber").orElse(1) - 1;
         final MusicPlayer musicPlayer = plugin.getMusicPlayer(player);
         musicPlayer.play(player,trackIndex, true);
-        /*
-        musicPlayer.getCurrentTrack().toScore().onFinish(() -> {
-            try {
-                stopTrack(source,context);
-            } catch (CommandException e) {
-                e.printStackTrace();
-            }
-        });*/
         return CommandResult.success();
     }
 

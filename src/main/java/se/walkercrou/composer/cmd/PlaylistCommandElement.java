@@ -10,7 +10,6 @@ import org.spongepowered.api.command.args.CommandContext;
 import org.spongepowered.api.command.args.CommandElement;
 
 import org.spongepowered.api.text.Text;
-import org.spongepowered.api.util.annotation.NonnullByDefault;
 import se.walkercrou.composer.Composer;
 
 import java.util.ArrayList;

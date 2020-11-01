@@ -44,11 +44,11 @@ public class MusicPlayer {
 		return tracks.getTracks().get(currentTrack);
 	}
 
-	public void setPlaylist(final Playlist playlist){
+	public void setPlaylist(final Playlist playlist) {
 		this.tracks = playlist;
 	}
 
-	public Playlist getPlaylist(){
+	public Playlist getPlaylist() {
 		return this.tracks;
 	}
 
@@ -71,7 +71,6 @@ public class MusicPlayer {
 	}
 
 
-
 	/**
 	 * Starts playing or resumes the specified track.
 	 *
@@ -86,6 +85,8 @@ public class MusicPlayer {
 				currentSong.pause();
 				currentSong = null;
 			}
+		} else if (loopTrack) {
+			currentSong = tracks.getTracks().get(currentTrack).toScore().onFinish(() -> next(player));
 		} else if (currentSong != null && playing) {
 			currentSong.pause();
 			playing = false;
@@ -95,7 +96,7 @@ public class MusicPlayer {
 					.build());
 			return;
 		}
-		if(loopTrack || playOnce)
+		if (playOnce)
 			currentSong = tracks.getTracks().get(currentTrack).toScore().onFinish(() -> stop(player));
 		else {
 			currentSong = tracks.getTracks().get(currentTrack).toScore().onFinish(() -> next(player));
@@ -117,7 +118,7 @@ public class MusicPlayer {
 	 * @param trackIndex
 	 */
 	public void play(Player player, int trackIndex) {
-		play(player,trackIndex,false);
+		play(player, trackIndex, false);
 	}
 
 	/**
@@ -141,6 +142,7 @@ public class MusicPlayer {
 
 	/**
 	 * Stops the {@link MusicPlayer}
+	 *
 	 * @param player
 	 */
 	public void stop(Player player) {
@@ -149,7 +151,7 @@ public class MusicPlayer {
 		int current = currentTrack;
 		currentSong.onFinish(() -> {
 			currentSong.finish();
-			play(player,current);
+			play(player, current);
 		});
 		player.sendMessage(Text.builder("Stopped: ")
 				.color(TextColors.GOLD)
@@ -179,9 +181,9 @@ public class MusicPlayer {
 	 * @param jumps  tracks to skip
 	 */
 	public void skip(Player player, int jumps) {
-		int newIndex = currentTrack + jumps;
+		int newIndex = (loopTrack) ? currentTrack : currentTrack + jumps;
 		if (newIndex < 0 || newIndex >= tracks.getTracks().size()) {
-			if(loopPlaylist){
+			if (loopPlaylist) {
 				newIndex = 0;
 			} else {
 				pause();

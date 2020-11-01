@@ -10,13 +10,14 @@ import org.spongepowered.api.command.args.CommandContext;
 import org.spongepowered.api.command.args.CommandElement;
 
 import org.spongepowered.api.text.Text;
+import org.spongepowered.api.util.annotation.NonnullByDefault;
 import se.walkercrou.composer.Composer;
 
 import java.util.ArrayList;
 import java.util.List;
 
 public class PlaylistCommandElement extends CommandElement {
-	private Composer composer = Composer.getInstance(); //probably should use inject here instead
+	private final Composer composer = Composer.getInstance(); //probably should use inject here instead
 	protected PlaylistCommandElement(@Nullable final Text key) {
 		super(key);
 	}
@@ -31,7 +32,7 @@ public class PlaylistCommandElement extends CommandElement {
 	}
 
 	@Override
-	public List<String> complete(final @NotNull CommandSource src, final @NotNull CommandArgs args, final @NotNull CommandContext context) {
+	public @NotNull List<String> complete(final @NotNull CommandSource src, final @NotNull CommandArgs args, final @NotNull CommandContext context) {
 		return new ArrayList<>(composer.getPlaylists().keySet());
 	}
 

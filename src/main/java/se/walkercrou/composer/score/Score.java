@@ -132,9 +132,15 @@ public class Score {
         play(context, viewer, null);
     }
 
+    public void resume(Object context, Player viewer) {
+        if(task == null)
+            play(context,viewer);
+    }
+
     /**
      * Pauses the song.
      */
+    //TODO Actually stops the song.
     public void pause() {
         if (task != null)
             task.cancel();
@@ -155,7 +161,7 @@ public class Score {
         boolean finished = true;
         for (Layer layer : layers)
             finished &= layer.onStep(viewer, pos, currentStep, stepsPerBeat);
-        if (currentStep == stepsPerBeat)
+        if (currentStep == stepsPerBeat) //?
             currentStep = 1;
         else
             currentStep++;

@@ -1,6 +1,5 @@
 package se.walkercrou.composer.util;
 
-import org.jetbrains.annotations.Nullable;
 import org.spongepowered.api.Sponge;
 import org.spongepowered.api.command.CommandException;
 import org.spongepowered.api.service.pagination.PaginationList;

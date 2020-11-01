@@ -107,22 +107,25 @@ public class Composer {
 		public void run() {
 			File file = new File(configPath.toFile().getParentFile(), "tracks");
 			if (!file.exists()) {
-				file.mkdirs();
-				logger.info("Created tracks folder.");
+				if(file.mkdirs())
+					logger.info("Created tracks folder.");
+				else logger.warn("Could not create tracks folder.");
 			}
 
 			if (config.getNode("use-playlists").getBoolean()) {
-				File playlists = new File(configPath.toFile().getParent(), "playlists");
-				if (!playlists.exists()) {
-					playlists.mkdirs();
-					logger.info("Created playlist folder.");
+				File playlistsFile = new File(configPath.toFile().getParent(), "playlists");
+				if (!playlistsFile.exists()) {
+					if(playlistsFile.mkdirs())
+						logger.info("Created playlists folder.");
+					else logger.warn("Could not create playlists folder");
 				}
 				file = new File(configPath.toFile().getParentFile(), "playlists/" + config.getNode("default-playlist").getString());
 				if (!file.exists()) {
-					file.mkdirs();
-					logger.info("Created default playlist folder.");
+					if(file.mkdirs())
+						logger.info("Created default playlist folder.");
+					else logger.warn("Could not create default playlist folder.");
 				}
-				for(File playlistDir: playlists.listFiles()){
+				for(File playlistDir: playlistsFile.listFiles()){
 					if(playlistDir.isDirectory()) {
 						loadTracks(playlistDir);
 						logger.info("Loaded "+playlistDir.getName());

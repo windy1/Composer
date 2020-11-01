@@ -1,6 +1,5 @@
 package se.walkercrou.composer.cmd;
 
-import org.apache.commons.lang3.StringUtils;
 import org.jetbrains.annotations.NotNull;
 import org.spongepowered.api.Sponge;
 import org.spongepowered.api.command.CommandException;
@@ -11,16 +10,12 @@ import org.spongepowered.api.command.args.CommandContext;
 import org.spongepowered.api.command.spec.CommandSpec;
 import org.spongepowered.api.entity.living.player.Player;
 import org.spongepowered.api.text.Text;
-import org.spongepowered.api.text.action.TextActions;
 import org.spongepowered.api.text.format.TextColors;
 import org.spongepowered.api.util.annotation.NonnullByDefault;
 import se.walkercrou.composer.Composer;
 import se.walkercrou.composer.Playlist;
 import se.walkercrou.composer.util.TextUtil;
 import se.walkercrou.composer.nbs.MusicPlayer;
-
-import java.util.ArrayList;
-import java.util.List;
 
 import static org.spongepowered.api.command.args.GenericArguments.*;
 import static se.walkercrou.composer.util.TextUtil.getPlaylistName;
@@ -190,7 +185,7 @@ public class ComposerCommands {
 
     @NonnullByDefault
     private CommandResult playTrack(CommandSource src, CommandContext context) throws CommandException {
-        int trackIndex = context.<Integer>getOne("trackNumber").get() - 1;
+        int trackIndex = context.<Integer>getOne("trackNumber").orElse(1) - 1;
         Player player = getPlayer(src, context);
         plugin.getMusicPlayer(player).play(player, trackIndex);
         return CommandResult.success();
@@ -199,7 +194,7 @@ public class ComposerCommands {
     @NonnullByDefault
     private @NotNull CommandResult selectPlaylist(CommandSource src, CommandContext context) throws CommandException {
         Player player = getPlayer(src,context);
-        Playlist playlist = context.<Playlist>getOne("playlist").get();
+        Playlist playlist = context.<Playlist>getOne("playlist").orElse(null);
         if(playlist == null)
             throw new CommandException(Text.of("This playlist doesn't exist."));
 
@@ -271,7 +266,7 @@ public class ComposerCommands {
     //TODO doesn't work
     private CommandResult playOnce(final  CommandSource source, final CommandContext context) throws CommandException {
         Player player = getPlayer(source,context);
-        int trackIndex = context.<Integer>getOne("trackNumber").get() - 1;
+        int trackIndex = context.<Integer>getOne("trackNumber").orElse(1) - 1;
         final MusicPlayer musicPlayer = plugin.getMusicPlayer(player);
         musicPlayer.play(player,trackIndex, true);
         /*

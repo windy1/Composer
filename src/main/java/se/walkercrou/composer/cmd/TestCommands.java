@@ -86,7 +86,8 @@ public class TestCommands {
 
         NoteBlockStudioSong nbs;
         try {
-            nbs = NoteBlockStudioSong.read(new File(context.<String>getOne("file").get()));
+
+                nbs = NoteBlockStudioSong.read(new File(context.<String>getOne("file").get()));
         } catch (IOException| CorruptedFileException e) {
             e.printStackTrace();
             throw new CommandException(Text.of("Error reading NBS file"), e);
@@ -101,7 +102,7 @@ public class TestCommands {
     @NonnullByDefault
     private CommandResult playNote(CommandSource src, CommandContext context, SoundType type) {
         Player player = (Player) src;
-        double pitch = context.<Double>getOne("pitch").get();
+        double pitch = context.<Double>getOne("pitch").orElse(2.0);
         player.getWorld().playSound(type, player.getLocation().getPosition(), 2, pitch);
         return CommandResult.success();
     }

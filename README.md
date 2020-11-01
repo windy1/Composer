@@ -5,7 +5,7 @@ Composer is a full featured note block music importer and player. Import Note Bl
 
 Composer comes with a full music player built in as shown below. There are commands for each action you can perform within this menu as well as the text itself being clickable.
 
-![Composer Example](https://forums-cdn.spongepowered.org/uploads/default/original/2X/6/65d7ce176196e1cdb95d2872a431e0d942eb935c.png)
+![Composer Example](./images/composer-overview.png)
 
 ## Features
 * Per player music player for loaded tracks.
@@ -17,6 +17,26 @@ Composer comes with a full music player built in as shown below. There are comma
 2. Place your .nbs files in the config/composer/tracks/ directory.
 3. Run the server.
 
+
+## Playlists
+As of v4.1.0 Composer support playlists. To use playlists enable the option in default.conf
+```
+use-playlists=true
+default-playlist="default"
+```
+### Creating a playlist
+1. Under config/composer/playlists create a folder with the desired name. 
+2. Place your .nbs files in the folder you created.
+3. Run the server.
+
+### Set a playlist 
+Run the `/music playlist <playlist>` command.
+
+### Setting a default playlist
+Change the config option to the playlist name.
+```
+default-playlist="default"
+```
 ## Commands
 Note: The -p lets you target a player other than yourself.
 * `/composer` or `/music`: Base command for plugin. These can be used interchangeably.
@@ -24,8 +44,10 @@ Note: The -p lets you target a player other than yourself.
         Aliases: `list-tracks`, `tracks`, `track-list`
 * `/music play [-p <player>] <trackNumber>`
         Aliases: `start`, `>`
+* `/music play-once [-p <player>] <trackNumber>`
 * `/music pause [-p <player>]`
-        Aliases: `stop`, `||`
+        Aliases: `||`
+* `/music stop`
 * `/music resume [-p <player>]`
 * `/music shuffle [-p <player>]`
 * `/music queue [-p <player>]`: Shows this player’s play queue
@@ -34,6 +56,13 @@ Note: The -p lets you target a player other than yourself.
         Aliases: `skip`, `>|`
 * `/music previous [-p <player>]`
         Aliases: `back`, `|<`
+* `/music playlist <playlist> [-p <player>]`: Sets an active playlist.
+* `/music list-playlist`
+        Aliases: `playlists`
+* `/music loop-track`: Loops the track.
+* `/music loop-playlist`: Loops the playlist.
+        
+
         
 ## Permissions
 * `composer.musicplayer`: Allows access to music player commands.

@@ -163,6 +163,7 @@ public class ComposerCommands {
     }
 
     @NonnullByDefault
+    //TODO: Doesn't resume
     private CommandResult resumeTrack(CommandSource src, CommandContext context) throws CommandException {
         Player player = getPlayer(src, context);
         MusicPlayer mp = plugin.getMusicPlayer(player);
@@ -220,6 +221,7 @@ public class ComposerCommands {
     }
 
     @NonnullByDefault
+    //TODO doesn't work
     private CommandResult loopTrack(final CommandSource source, final CommandContext context) throws  CommandException {
         Player player = getPlayer(source,context);
         final MusicPlayer musicPlayer = plugin.getMusicPlayer(player);
@@ -264,12 +266,20 @@ public class ComposerCommands {
         return CommandResult.success();
     }
     @NonnullByDefault
+    //TODO doesn't work
     private CommandResult playOnce(final  CommandSource source, final CommandContext context) throws CommandException {
         Player player = getPlayer(source,context);
         int trackIndex = context.<Integer>getOne("trackNumber").get() - 1;
         final MusicPlayer musicPlayer = plugin.getMusicPlayer(player);
-        musicPlayer.play(player,trackIndex);
-        musicPlayer.getCurrentTrack().toScore().onFinish(() -> musicPlayer.stop(player));
+        musicPlayer.play(player,trackIndex, true);
+        /*
+        musicPlayer.getCurrentTrack().toScore().onFinish(() -> {
+            try {
+                stopTrack(source,context);
+            } catch (CommandException e) {
+                e.printStackTrace();
+            }
+        });*/
         return CommandResult.success();
     }
 

@@ -69,10 +69,11 @@ public class MusicPlayer {
 	/**
 	 * Starts playing or resumes the specified track.
 	 *
+	 * @param playOnce   play once
 	 * @param player     player
 	 * @param trackIndex index of track
 	 */
-	public void play(Player player, int trackIndex) {
+	public void play(Player player, int trackIndex, boolean playOnce) {
 		if (trackIndex != currentTrack) {
 			currentTrack = trackIndex;
 			if (currentSong != null) {
@@ -88,7 +89,7 @@ public class MusicPlayer {
 					.build());
 			return;
 		}
-		if(loopTrack)
+		if(loopTrack || playOnce)
 			currentSong = tracks.getTracks().get(currentTrack).toScore().onFinish(() -> stop(player));
 		else {
 			currentSong = tracks.getTracks().get(currentTrack).toScore().onFinish(() -> next(player));
@@ -104,12 +105,22 @@ public class MusicPlayer {
 	}
 
 	/**
+	 * Starts playing or resumes the specified track.
+	 *
+	 * @param player
+	 * @param trackIndex
+	 */
+	public void play(Player player, int trackIndex) {
+		play(player,trackIndex,false);
+	}
+
+	/**
 	 * Starts playing or resumes the current track.
 	 *
 	 * @param player player
 	 */
 	public void play(Player player) {
-		play(player, currentTrack);
+		play(player, currentTrack, false);
 	}
 
 	/**

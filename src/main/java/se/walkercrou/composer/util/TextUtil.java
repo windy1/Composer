@@ -24,7 +24,17 @@ public final class TextUtil {
         throw new IllegalStateException("Util class");
     }
 
+    private static Text.Builder playText(Text.Builder builder, int i) {
+         return builder.onClick(TextActions.runCommand("/music > " + (i + 1)))
+                .onHover(TextActions.showText(Text.of("Click to play.")));
+    }
 
+    private static Text.Builder playOnceText(int i){
+        return Text.builder("Play Once")
+                .color(TextColors.DARK_GRAY)
+                .onClick(TextActions.runCommand("/music play-once " + (i +1)))
+                .onHover(TextActions.showText(Text.of("Click to play once.")));
+    }
 
     /**
      * Returns a pagination builder for the specified tracks.
@@ -36,16 +46,9 @@ public final class TextUtil {
     public static PaginationList.Builder trackList(List<NoteBlockStudioSong> tracks) throws CommandException {
         List<Text> trackListings = new ArrayList<>();
         for (int i = 0; i < tracks.size(); i++) {
-            trackListings.add(TextUtil.track(tracks.get(i))
-                    .onClick(TextActions.runCommand("/music > " + (i + 1)))
-                    .onHover(TextActions.showText(Text.of("Click to play.")))
+            trackListings.add(playText(TextUtil.track(tracks.get(i)),i)
                     .append(Text.of("  "))
-                    .append(Text.builder("Play Once")
-                            .color(TextColors.DARK_GRAY)
-                            .onClick(TextActions.runCommand("/music play-once " + (i +1)))
-                            .onHover(TextActions.showText(Text.of("Click to play once.")))
-                            .build()
-                    )
+                    .append(playOnceText(i).build())
                     .build());
         }
 
@@ -95,12 +98,14 @@ public final class TextUtil {
                                 .color(TextColors.LIGHT_PURPLE)
                                 .style(TextStyles.RESET)
                                 .onClick(TextActions.runCommand("/music |<"))
+                                .onHover(TextActions.showText(Text.of("Previous")))
                                 .build())
                         .append(Text.of(" "))
                         .append(Text.builder("»")
                                 .color(TextColors.LIGHT_PURPLE)
                                 .style(TextStyles.RESET)
                                 .onClick(TextActions.runCommand("/music >|"))
+                                .onHover(TextActions.showText(Text.of("Next")))
                                 .build())
                         .build())
                 .footer(Text.builder("Click a track to start playing.").color(TextColors.GRAY).build())

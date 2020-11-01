@@ -1,5 +1,6 @@
 package se.walkercrou.composer.util;
 
+import org.jetbrains.annotations.Nullable;
 import org.spongepowered.api.Sponge;
 import org.spongepowered.api.command.CommandException;
 import org.spongepowered.api.service.pagination.PaginationList;
@@ -46,7 +47,7 @@ public final class TextUtil {
 	 * @return pagination builder
 	 * @throws CommandException if list is empty
 	 */
-	public static PaginationList.Builder trackList(List<NoteBlockStudioSong> tracks) throws CommandException {
+	public static PaginationList.Builder trackList(List<NoteBlockStudioSong> tracks, final String title) throws CommandException {
 		List<Text> trackListings = new ArrayList<>();
 		for (int i = 0; i < tracks.size(); i++) {
 			trackListings.add(playText(TextUtil.track(tracks.get(i)), i)
@@ -60,7 +61,7 @@ public final class TextUtil {
 
 		return Sponge.getServiceManager().provide(PaginationService.class).get().builder()
 				.contents(trackListings)
-				.title(Text.builder("Tracks").color(TextColors.GOLD).build())
+				.title(Text.builder(title).color(TextColors.GOLD).build())
 				.header(
 						Text.builder()
 								.append(Text.of("Play"))
@@ -161,7 +162,7 @@ public final class TextUtil {
 		return Composer.getInstance().getPlaylists().keySet()
 				.stream()
 				.filter(key -> playlist.equals(Composer.getInstance().getPlaylists().get(key)))
-				.findFirst().get();
+				.findFirst().orElse("Tracks");
 	}
 
 	private static String strOrUnknown(String str) {

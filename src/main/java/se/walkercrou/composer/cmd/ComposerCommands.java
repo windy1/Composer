@@ -151,7 +151,8 @@ public class ComposerCommands {
     @NonnullByDefault
     private CommandResult printPlayQueue(CommandSource src, CommandContext context) throws CommandException {
         Player player = getPlayer(src, context);
-        TextUtil.trackList(plugin.getMusicPlayer(player).getTracks()).sendTo(src);
+        final String title = getPlaylistName(plugin.getMusicPlayer(player).getPlaylist());
+        TextUtil.trackList(plugin.getMusicPlayer(player).getTracks(),title).sendTo(src);
         return CommandResult.success();
     }
 
@@ -213,10 +214,11 @@ public class ComposerCommands {
 
     @NonnullByDefault
     private CommandResult listTracks(CommandSource source, CommandContext context) throws CommandException {
+        final String title = getPlaylistName(plugin.getMusicPlayer((Player)source).getPlaylist());
         if(Composer.getInstance().getConfig().getNode("use-playlists").getBoolean())
-            TextUtil.trackList(plugin.getMusicPlayer((Player)source).getTracks()).sendTo(source);
+            TextUtil.trackList(plugin.getMusicPlayer((Player)source).getTracks(), title).sendTo(source);
         else
-            TextUtil.trackList(plugin.getNbsTracks()).sendTo(source);
+            TextUtil.trackList(plugin.getNbsTracks(), title).sendTo(source);
         return CommandResult.success();
     }
 

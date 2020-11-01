@@ -48,6 +48,10 @@ public class MusicPlayer {
 		this.tracks = playlist;
 	}
 
+	public Playlist getPlaylist(){
+		return this.tracks;
+	}
+
 	/**
 	 * Returns the tracks in this player.
 	 *
@@ -65,6 +69,8 @@ public class MusicPlayer {
 	public boolean isPlaying() {
 		return playing;
 	}
+
+
 
 	/**
 	 * Starts playing or resumes the specified track.

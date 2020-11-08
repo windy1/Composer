@@ -85,7 +85,7 @@ public class Composer {
 			if(config.getNode("use-playlists").getBoolean())
 				mp = new MusicPlayer(this, playlists.get(config.getNode("default-playlist").getString()).getTracks());
 			else
-				mp = new MusicPlayer(this, getNbsTracks());
+				mp = new MusicPlayer(this, nbsTracks);
 			musicPlayers.put(playerId, mp);
 		}
 		return mp;

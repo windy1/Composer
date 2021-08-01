@@ -241,6 +241,16 @@ public class NoteBlockStudioSong {
                     return SoundTypes.BLOCK_NOTE_SNARE;
                 case 4:
                     return SoundTypes.BLOCK_NOTE_PLING;
+                case 5:
+                    return  SoundTypes.BLOCK_NOTE_GUITAR;
+                case 6:
+                    return SoundTypes.BLOCK_NOTE_FLUTE;
+                case 7:
+                    return SoundTypes.BLOCK_NOTE_BELL;
+                case 8:
+                    return SoundTypes.BLOCK_NOTE_CHIME;
+                case 9:
+                    return SoundTypes.BLOCK_NOTE_XYLOPHONE;
             }
         }
 

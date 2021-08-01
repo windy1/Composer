@@ -29,6 +29,9 @@ import java.nio.ByteOrder;
 @Getter
 public class NoteBlockStudioSong {
     // ---- Header ---
+    private short zeroBytes;
+    private byte version;
+    private byte instruments;
     private short lengthTicks;
     private short height; // amount of layers
     private String name;
@@ -133,6 +136,9 @@ public class NoteBlockStudioSong {
     }
 
     private static void readHeader(NoteBlockStudioSong result, ByteBuffer buffer) throws IOException {
+        result.zeroBytes = buffer.getShort();
+        result.version = buffer.get();
+        result.instruments = buffer.get();
         result.lengthTicks = buffer.getShort();
         result.height = buffer.getShort();
         result.name = getString(buffer);

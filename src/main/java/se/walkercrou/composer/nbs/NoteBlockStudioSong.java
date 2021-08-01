@@ -48,6 +48,9 @@ public class NoteBlockStudioSong {
     private int blocksAdded;
     private int blocksRemoved;
     private String importedFileName;
+    private byte loop;
+    private byte maxLoop;
+    private short loopStartTick;
 
     // ---- Note Blocks ----
     private NoteBlock[][] noteBlocks;
@@ -155,6 +158,9 @@ public class NoteBlockStudioSong {
         result.blocksAdded = buffer.getInt();
         result.blocksRemoved = buffer.getInt();
         result.importedFileName = getString(buffer);
+        result.loop = buffer.get();
+        result.maxLoop = buffer.get();
+        result.loopStartTick = buffer.getShort();
     }
 
     private static void readNoteBlocks(NoteBlockStudioSong result, ByteBuffer buffer) throws IOException, CorruptedFileException {
@@ -174,8 +180,11 @@ public class NoteBlockStudioSong {
                 layer += jumps;
                 byte instrument = buffer.get();
                 byte key = buffer.get();
+                byte volume = buffer.get();
+                byte panning = buffer.get();
+                short pitch = buffer.getShort();
                 try {
-                    result.noteBlocks[layer][tick] = new NoteBlock(instrument, key);
+                    result.noteBlocks[layer][tick] = new NoteBlock(instrument, key,volume,panning,pitch);
                 } catch (ArrayIndexOutOfBoundsException e){
                     throw new CorruptedFileException("Most likely a corrupted file..");
                 }
@@ -184,11 +193,15 @@ public class NoteBlockStudioSong {
     }
 
 
-
     private static void readLayerInfo(NoteBlockStudioSong result, ByteBuffer buffer) throws IOException {
+        String name = getString(buffer);
+        byte lock = buffer.get();
+        byte volume = buffer.get();
+        byte stereo = buffer.get();
+
         result.layerInfo = new LayerInfo[result.height + 1];
         for (int i = 0; i < result.height; i++)
-            result.layerInfo[i] = new LayerInfo(getString(buffer), buffer.get());
+            result.layerInfo[i] = new LayerInfo(name,lock,volume,stereo);
     }
 
     /**
@@ -198,10 +211,16 @@ public class NoteBlockStudioSong {
     public static class NoteBlock {
         private final byte instrument;
         private final byte key;
+        private final byte volume;
+        private final byte panning;
+        private final short pitch;
 
-        private NoteBlock(byte instrument, byte key) {
+        private NoteBlock(byte instrument, byte key, byte volume, byte panning, short pitch) {
             this.instrument = instrument;
             this.key = key;
+            this.volume = volume;
+            this.panning = panning;
+            this.pitch = pitch;
         }
 
         /**
@@ -237,11 +256,15 @@ public class NoteBlockStudioSong {
     @Getter
     public static class LayerInfo {
         private final String name;
+        private final byte lock;
         private final byte volume;
+        private final byte stereo;
 
-        private LayerInfo(String name, byte volume) {
+        private LayerInfo(String name, byte lock, byte volume, byte stereo) {
             this.name = name;
+            this.lock = lock;
             this.volume = volume;
+            this.stereo = stereo;
         }
 
         @Override

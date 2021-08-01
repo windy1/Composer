@@ -259,7 +259,7 @@ public class ComposerCommands {
 
     @NonnullByDefault
     private CommandResult listPlaylists(final CommandSource source,final CommandContext context) throws CommandException {
-        Player player = (Player) source;
+        Player player = getPlayer(source,context);
         if(!Composer.getInstance().getConfig().getNode("use-playlists").getBoolean()){
             player.sendMessage(Text.builder("Playlists are disabled.").color(TextColors.RED).build());
             return CommandResult.success();

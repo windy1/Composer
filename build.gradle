@@ -22,7 +22,7 @@ processResources {
 }
 
 repositories {
-    jcenter()
+    mavenCentral()
 }
 
 dependencies {

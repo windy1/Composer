@@ -86,8 +86,7 @@ public class TestCommands {
 
         NoteBlockStudioSong nbs;
         try {
-
-                nbs = NoteBlockStudioSong.read(new File(context.<String>getOne("file").get()));
+            nbs = NoteBlockStudioSong.read(new File(context.<String>getOne("file").get()));
         } catch (IOException| CorruptedFileException e) {
             e.printStackTrace();
             throw new CommandException(Text.of("Error reading NBS file"), e);

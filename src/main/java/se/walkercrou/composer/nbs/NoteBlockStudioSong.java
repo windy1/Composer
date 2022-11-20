@@ -20,6 +20,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.nio.ByteBuffer;
 import java.nio.ByteOrder;
+import java.nio.file.Files;
 
 /**
  * Represents song data imported from the Note Block Studio file format (.nbs).
@@ -121,7 +122,7 @@ public class NoteBlockStudioSong {
         if (!file.exists())
             throw new FileNotFoundException();
         NoteBlockStudioSong result = new NoteBlockStudioSong();
-        InputStream in = new FileInputStream(file);
+        InputStream in = Files.newInputStream(file.toPath());
         byte[] bytes = ByteStreams.toByteArray(in);
         ByteBuffer buffer = ByteBuffer.wrap(bytes).order(ByteOrder.LITTLE_ENDIAN);
         readHeader(result, buffer);

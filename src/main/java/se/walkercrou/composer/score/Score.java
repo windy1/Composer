@@ -132,15 +132,20 @@ public class Score {
         play(context, viewer, null);
     }
 
-    public void resume(Object context, Player viewer) {
+    public void resume(Object context, Player viewer, Vector3d pos) {
         if(task == null)
-            play(context,viewer);
+            play(context,viewer, pos);
     }
 
     /**
      * Pauses the song.
      */
-    //TODO Actually stops the song.
+    /*TODO Actually stops the song.
+     We should store the "paused" position for the player.
+     Stop the song, and if the paused position is not 0, start it from there.
+     Pause will effectively stop the song, but the start exec will continue
+     from the correct position
+     */
     public void pause() {
         if (task != null)
             task.cancel();

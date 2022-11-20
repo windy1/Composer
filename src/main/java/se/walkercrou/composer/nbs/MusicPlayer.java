@@ -114,8 +114,8 @@ public class MusicPlayer {
 	/**
 	 * Starts playing or resumes the specified track.
 	 *
-	 * @param player
-	 * @param trackIndex
+	 * @param player player
+	 * @param trackIndex index
 	 */
 	public void play(Player player, int trackIndex) {
 		play(player, trackIndex, false);
@@ -143,7 +143,7 @@ public class MusicPlayer {
 	/**
 	 * Stops the {@link MusicPlayer}
 	 *
-	 * @param player
+	 * @param player player
 	 */
 	public void stop(Player player) {
 		playing = false;

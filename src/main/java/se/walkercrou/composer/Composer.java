@@ -17,6 +17,7 @@ import org.spongepowered.api.scheduler.Task;
 import se.walkercrou.composer.cmd.ComposerCommands;
 import se.walkercrou.composer.cmd.TestCommands;
 import se.walkercrou.composer.exception.CorruptedFileException;
+import se.walkercrou.composer.exception.OldNbsVersionException;
 import se.walkercrou.composer.nbs.MusicPlayer;
 import se.walkercrou.composer.nbs.NoteBlockStudioSong;
 
@@ -68,7 +69,6 @@ public class Composer {
 		new ComposerCommands(this).register();
 		Task.Builder taskBuilder = Task.builder();
 		taskBuilder.execute(new LoadTracksRunnable()).submit(this);
-		//loadTracks();
 	}
 
 	/**
@@ -180,6 +180,9 @@ public class Composer {
 			} catch (IOException | CorruptedFileException e) {
 				logger.error("Could not read file (file is likely malformed): "+ path);
 				logger.debug(e.getMessage());
+			} catch (OldNbsVersionException e) {
+				logger.error(e.getMessage());
+				logger.error("Please update your NBS file to a new format, using NBS studio or something similar.");
 			}
 			return null;
 		}

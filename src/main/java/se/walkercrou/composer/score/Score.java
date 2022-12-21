@@ -132,9 +132,11 @@ public class Score {
         play(context, viewer, null);
     }
 
-    public void resume(Object context, Player viewer, Vector3d pos) {
-        if(task == null)
-            play(context,viewer, pos);
+    public void resume(Object context, Player viewer, Integer step) {
+        if(task == null) {
+            currentStep = step == null ? 0 : step;
+            play(context, viewer);
+        }
     }
 
     /**

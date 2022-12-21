@@ -6,6 +6,7 @@ import org.apache.commons.lang3.builder.ToStringBuilder;
 import org.spongepowered.api.effect.sound.SoundType;
 import org.spongepowered.api.effect.sound.SoundTypes;
 import se.walkercrou.composer.exception.CorruptedFileException;
+import se.walkercrou.composer.exception.OldNbsVersionException;
 import se.walkercrou.composer.score.Layer;
 import se.walkercrou.composer.score.Measure;
 import se.walkercrou.composer.score.Note;
@@ -118,17 +119,26 @@ public class NoteBlockStudioSong {
      * @return song data
      * @throws IOException
      */
-    public static NoteBlockStudioSong read(File file) throws IOException, CorruptedFileException {
+    public static NoteBlockStudioSong read(File file) throws IOException, CorruptedFileException, OldNbsVersionException {
         if (!file.exists())
             throw new FileNotFoundException();
         NoteBlockStudioSong result = new NoteBlockStudioSong();
         InputStream in = Files.newInputStream(file.toPath());
         byte[] bytes = ByteStreams.toByteArray(in);
         ByteBuffer buffer = ByteBuffer.wrap(bytes).order(ByteOrder.LITTLE_ENDIAN);
+        checkVersion(result,buffer,file.getName());
+
         readHeader(result, buffer);
         readNoteBlocks(result, buffer);
         readLayerInfo(result, buffer);
         return result;
+    }
+
+    private static void checkVersion(final NoteBlockStudioSong result, ByteBuffer buffer, final String fileName) throws OldNbsVersionException{
+        result.zeroBytes = buffer.getShort();
+        if(result.zeroBytes != 0) {
+            throw new OldNbsVersionException(fileName);
+        }
     }
 
     private static String getString(ByteBuffer in) throws IOException {
@@ -140,7 +150,6 @@ public class NoteBlockStudioSong {
     }
 
     private static void readHeader(NoteBlockStudioSong result, ByteBuffer buffer) throws IOException {
-        result.zeroBytes = buffer.getShort();
         result.version = buffer.get();
         result.instruments = buffer.get();
         result.lengthTicks = buffer.getShort();
@@ -262,7 +271,7 @@ public class NoteBlockStudioSong {
     }
 
     /**
-     * Represents some meta data relating to a layer of the song.
+     * Represents some metadata relating to a layer of the song.
      */
     @Getter
     public static class LayerInfo {
